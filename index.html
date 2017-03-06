@@ -63,6 +63,608 @@
 
 
 
+//---------------------------------------------------------
+//                                CHART 1
+//---------------------------------------------------------
+
+            var chart1;
+            var chart1Data;
+            var chart1CreatedSeries;
+            var chart1_last_month;
+            var chart1Timeout0;
+            var chart1Timeout1;
+            var chart1Timeout2;
+            var chart1Timeout3;
+
+            function startAnimatingChart1() {
+                clearTimeout(chart1Timeout0);
+                clearTimeout(chart1Timeout1);
+                clearTimeout(chart1Timeout2);
+                clearTimeout(chart1Timeout3);
+
+                drawChart1();
+
+                chart1Timeout0 = setTimeout(function() {
+                    chart1.addSeries(chart1CreatedSeries[0]);
+                }, 0);
+                chart1Timeout1 = setTimeout(function() {
+                    chart1.addSeries(chart1CreatedSeries[1]);
+                }, 2000);
+                chart1Timeout2 = setTimeout(function() {
+                    chart1.addSeries(chart1CreatedSeries[2]);
+                }, 4000);
+
+                chart1Timeout3 =setTimeout(function () {
+                    chart1.update({xAxis: {
+                        min: null,
+                        max:null,
+                    }});
+                }, 25000);
+            }
+
+            //Chart 1 specific functions
+            function drawChart1() {
+
+                var jsonStatData = chart1Data;
+                var jsonStatUtflutningurData= chart1bData;
+
+
+                //Extrat Data From JSON Stat
+
+                ds = JSONstat(jsonStatData).Dataset(0);
+
+
+                dsutflutningur = JSONstat(jsonStatUtflutningurData).Dataset(0);
+
+                t = dsutflutningur.Dimension("year").length - 1;
+                year = dsutflutningur.Dimension("year").id;
+
+                yearinnflutningur = ds.Dimension("year").id;
+                yearinnflutningurlength = yearinnflutningur.length
+                var fLen = year.length;
+
+                yearinnflutningurutflutningurdifference = yearinnflutningurlength - fLen;
+
+
+
+                m = dsutflutningur.Dimension("month").id;
+
+                //Format Data
+
+
+
+
+                var innflutningurdata = [];
+                var utflutningurdata = [];
+                var nettoflytingdata = [];
+
+                var yaxisinnflutningur = [];
+                var yaxisutflutningur = [];
+
+                for (var i = 0; i < fLen; i++) {
+
+
+                    innflutningur = ds.Data({ "BEC-groups": "0", "year": ds.Dimension("year").id[i + yearinnflutningurutflutningurdifference] }, false).filter(function(n) { return n; });
+                    utflutningur = dsutflutningur.Data({ "unit": "0", "commodity group": "0", "year": dsutflutningur.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+
+
+                    for (var j = 0; j < utflutningur.length; j++) {
+
+                        yaxisinnflutningur.push[innflutningur[j]];
+                        yaxisutflutningur.push[-utflutningur[j]];
+
+                        var month = m[j];
+
+                        if(month.length == 1) {
+                            month = "0" + month;
+                        }
+
+
+                        innflutningurdata.push([Date.parse(year[i] + "-" + month), -innflutningur[j]/1000]);
+                        utflutningurdata.push([Date.parse(year[i] + "-" + month), utflutningur[j]/1000]);
+                        nettoflytingdata.push([Date.parse(year[i] + "-" + month), (utflutningur[j] - innflutningur[j])/1000]);
+
+                    }
+                }
+
+                var chart1_last_month = innflutningurdata[innflutningurdata.length - 1];
+                chart1_last_month = chart1_last_month[0];
+
+                //Build Series
+                var createdSeries = [{
+                    name: "Útflutningur",
+                    data: utflutningurdata,
+                    color: "#7fb800",
+                    borderWidth: 0,
+                    tooltip: {
+                        valueDecimals: 0
+                    }
+                }, {
+                    name: "Innflutningur",
+                    data: innflutningurdata,
+                    color: "#00a6ed",
+                    borderWidth: 0,
+
+                    tooltip: {
+                        valueDecimals: 0
+                    }
+                }, {
+                    name: "Handilsjavni",
+                    type: "spline",
+                    data: nettoflytingdata,
+                    color: "#fff",
+                    borderWidth: 0,
+                    tooltip: {
+                        valueDecimals: 0
+                    },
+                    marker: {
+                        enabled: false
+                    }
+                }];
+                chart1CreatedSeries = createdSeries;
+
+
+                //Build Title
+                var title = ds.label;
+
+                //Build subtitle
+                var subtitle = ds.source;
+
+                //Build Tooltip
+                var tooltipFunction = function () {
+                    var s = "<b>" + Highcharts.dateFormat("%Y-%b", this.x) + "</b>";
+                    $.each(this.points,
+                        function (i, point) {
+                            s += "<br/>" + point.series.name + ": " + Highcharts.numberFormat(point.y, 0.0, ",", ".");
+                        });
+
+                    return s;
+                }
+
+                //Build Chart
+                $("#chart1").highcharts({
+                    credits: {
+                        enabled: false
+                    },
+                    chart: {
+                        type: "column",
+                        backgroundColor: "rgba(255, 255, 255, 0)",
+                        borderWidth: 0,
+                        renderTo: "container",
+                        events: {
+                            load: function () {
+                                chart1 = this;
+                            }
+
+                        }
+                    },
+                    rangeSelector: {
+                        enabled: false
+                    },
+
+                    exporting: {
+                        enabled: false
+                    },
+
+                    navigator: {
+                        enabled: false
+                    },
+                    title: {
+                        text: ""
+                    },
+                    legend: {
+                        layout: "horizontal",
+                        align: "center",
+                        verticalAlign: "top",
+
+                        itemStyle: {
+                            color: "#fff",
+                            fontWeight: "normal"
+                        }
+                    },
+                    xAxis: {
+                        title: {
+                            enabled: false
+                        },
+                        type: "datetime",
+                        min: chart1_last_month - 65743595833,
+                        max: chart1_last_month,
+                        labels: {
+                            style: {
+                                color: "#fff",
+                                fontSize: "11px"
+                            }
+                        },
+
+                    },
+                    yAxis: {
+                        title: {
+                            text: "",
+                            style: {
+                                color: "#fff",
+                                fontWeight: "normal",
+                                fontSize: "12px"
+                            }
+                        },
+                        lineColor: "#fff",
+                        tickColor: "#fff",
+                        labels: {
+                            formatter: function () {
+                                return Highcharts.numberFormat(Math.abs(this.value),0);
+                            },
+                            style: {
+                                color: "#fff",
+                                font: "11px"
+                            }
+                        },
+                    },
+                    tooltip: {
+                        enabled: false
+                    },
+                    plotOptions: {
+                        series: {
+                            stacking: "normal",
+                            showInNavigator: true,
+                            dataGrouping:{
+                                enabled: true,
+                                approximation: "sum",
+                                units:[ ["year", null]]
+                            }
+                        },
+
+                        
+
+                    },
+                    series: []
+                });
+            }
+
+            function loadDataAndBuildChart1() {
+                POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_innbec.px", {
+                    "query": [
+                        {
+                              "code": "BEC-groups",
+                              "selection": {
+                                "filter": "item",
+                                "values": [
+                                  "0"
+                                ]
+                              }
+                            },
+                        {
+                          "code": "month",
+                          "selection": {
+                            "filter": "item",
+                            "values": [
+                              "1",
+                              "2",
+                              "3",
+                              "4",
+                              "5",
+                              "6",
+                              "7",
+                              "8",
+                              "9",
+                              "10",
+                              "11",
+                              "12"
+                            ]
+                          }
+                        }
+                    ],
+                    "response": {
+                        "format": "json-stat"
+
+                    }
+
+                },function(data) {
+                    chart1Data = data;
+                    loadDataAndBuildChart1b();
+                } );
+            }
+
+
+            function loadDataAndBuildChart1b() {
+                POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_ututgr.px", {
+                    "query": [
+                        {
+                          "code": "unit",
+                          "selection": {
+                            "filter": "item",
+                            "values": [
+                              "0"
+                            ]
+                          }
+                        },
+                        {
+                              "code": "commodity group",
+                              "selection": {
+                                "filter": "item",
+                                "values": [
+                                  "0"
+                                ]
+                              }
+                            },
+                        {
+                          "code": "month",
+                          "selection": {
+                            "filter": "item",
+                            "values": [
+                              "1",
+                              "2",
+                              "3",
+                              "4",
+                              "5",
+                              "6",
+                              "7",
+                              "8",
+                              "9",
+                              "10",
+                              "11",
+                              "12"
+                            ]
+                          }
+                        }
+                    ],
+                    "response": {
+                        "format": "json-stat"
+
+                    }
+
+                },function(data) {
+                    chart1bData = data;
+                    drawChart1();
+                    startAnimatingChart1();
+                } );
+            }
+
+
+
+
+
+
+
+//---------------------------------------------------------
+//                       CHART 2
+//---------------------------------------------------------
+            var chart2;
+            var chart2Data;
+            var chart2_last_month;
+            var chart2Timeout0;
+
+            function startAnimatingChart2() {
+                clearTimeout(chart2Timeout0);
+
+                drawChart2();
+
+                chart2Timeout0 = setTimeout(function () {
+                    chart2.update({xAxis: {
+                        min: null,
+                        max: null
+                    }});
+                }, 25000);
+            }
+
+            //Chart 9 specific functions
+            function drawChart2() {
+                var jsonStatData = chart2Data;
+
+                //Extrat Data From JSON Stat
+                ds = JSONstat(jsonStatData).Dataset(0);
+                t = ds.Dimension("year").length - 1;
+                year = ds.Dimension("year").id;
+
+                var fLen = year.length;
+                m = ds.Dimension("month").id;
+
+                //Format Data
+                var utflutningurdata = [];
+
+                for (var i = 0; i < fLen; i++) {
+                    var utflutningur = ds.Data({ "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+
+                    for (var j = 0; j < utflutningur.length; j++) {
+                        var month = m[j];
+                        if(month.length == 1) {
+                            month = "0" + month;
+                        }
+                        utflutningurdata.push([Date.parse(year[i] + "-" + month), utflutningur[j]*0.001]);
+                    }
+                }
+
+
+
+
+
+                var chart2_last_month = utflutningurdata[utflutningurdata.length - 1];
+                chart2_last_month = chart2_last_month[0];
+
+                //Build Series
+                var createdSeries = [{
+                    name: "Útflutningur",
+                    data: utflutningurdata,
+                    color: "#fff",
+                    tooltip: {
+                        valueDecimals: 1
+                    }
+                }
+                ];
+
+                //Build Title
+                var title = ds.label;
+
+                //Build subtitle
+                var subtitle = ds.source;
+
+                //Build Tooltip
+                var tooltipFunction = function () {
+                    var s = "<b>" + Highcharts.dateFormat("%Y-%b", this.x) + "</b>";
+                    $.each(this.points,
+                        function (i, point) {
+                            s += "<br/>" + point.series.name + ": " + Highcharts.numberFormat(point.y, 0.0, ",", ".");
+                        });
+
+                    return s;
+                }
+
+                //Build Chart
+                $("#chart2").highcharts({
+                    credits: {
+                        enabled: false
+                    },
+                    chart: {
+                        type:"line",
+                        backgroundColor: "rgba(255, 255, 255, 0)",
+                        borderWidth: 0,
+                        renderTo: "container",
+                        events: {
+                            load: function () {
+                                chart2 = this;
+                            }
+                        }
+                    }
+                    ,
+                    rangeSelector: {
+                        enabled: false
+                    },
+
+                    exporting: {
+                        enabled: false
+                    },
+                    navigator: {
+                        enabled: false
+                    },
+                    title: {
+                        text: ""
+                    },
+                    legend: {
+                        layout: "horizontal",
+                        align: "center",
+                        verticalAlign: "top",
+
+                        itemStyle: {
+                            color: "#fff",
+                            fontWeight: "normal"
+                        }
+                    },
+                    xAxis: {
+                        title: {
+                            enabled: false
+                        },
+                        tickInterval: 2629746000,
+                        type: "datetime",
+                        lineColor: "#fff",
+                        tickColor: "#fff",
+                        min: chart2_last_month - 65743595833,
+                        max: chart2_last_month,
+                        labels: {
+                            style: {
+                                color: "#fff",
+                                fontSize: "11px"
+                            }
+                        }
+
+                    },
+                    yAxis: {
+                        title: {
+                            text: "",
+                            style: {
+                                color: "#fff",
+                                fontWeight: "normal",
+                                fontSize: "12px"
+                            }
+                        },
+                        lineColor: "#fff",
+                        tickColor: "#fff",
+                        labels: {
+                            formatter: function () {
+                                return Highcharts.numberFormat(this.value,0) + "";
+                            },
+                            style: {
+                                color: "#fff",
+                                fontSize: "11px"
+                            }
+                        },
+                    },
+                    tooltip: {
+                        enabled: false
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    plotOptions: {
+                        line: {
+                            marker: {
+                                enabled: false
+                            },
+                            dataLabels: {
+                                enabled: true,
+                                color: "#FFF",
+                                useHTML: true,
+                                crop: false,
+                                overflow: false,
+                                formatter: function() {
+                                  var last  = this.series.data[this.series.data.length - 1];
+                                  if (this.point.category === last.category && this.point.y === last.y) {
+                                    return ('<div class="MyDataLabelTooltip"><span class="datetext">' + Highcharts.dateFormat("%b &apos;%y",this.point.x) + "</span><br />" + Highcharts.numberFormat(this.point.y,0) + " mió" + "</div>");
+                                  }
+                                  else {return};
+                                }
+                            }
+                        },
+                        series: {
+                            showInNavigator: true
+                        }
+                    },
+                    series: createdSeries
+                });
+            }
+
+            function loadDataAndBuildChart2() {
+                POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_ututgr.px", {
+                    "query": [
+                        {
+                            "code": "unit",
+                            "selection": {
+                                "filter": "item",
+                                "values": [
+                                    "0"
+                                ]
+                            }
+                        },
+                        {
+                            "code": "month",
+                            "selection": {
+                                "filter": "item",
+                                "values": [
+                                    "1",
+                                    "2",
+                                    "3",
+                                    "4",
+                                    "5",
+                                    "6",
+                                    "7",
+                                    "8",
+                                    "9",
+                                    "10",
+                                    "11",
+                                    "12"
+                                ]
+                            }
+                        }
+                    ],
+                    "response": {
+                        "format": "json-stat"
+                    }
+                }, function(data) {
+                    chart2Data = data;
+                    drawChart2();
+                    startAnimatingChart2();
+                });
+            }
+
+
+
 
 
 
@@ -1061,364 +1663,6 @@
 
 
 
-//---------------------------------------------------------
-//                                CHART 1
-//---------------------------------------------------------
-
-            var chart1;
-            var chart1Data;
-            var chart1CreatedSeries;
-            var chart1_last_month;
-            var chart1Timeout0;
-            var chart1Timeout1;
-            var chart1Timeout2;
-            var chart1Timeout3;
-
-            function startAnimatingChart1() {
-                clearTimeout(chart1Timeout0);
-                clearTimeout(chart1Timeout1);
-                clearTimeout(chart1Timeout2);
-                clearTimeout(chart1Timeout3);
-
-                drawChart1();
-
-                chart1Timeout0 = setTimeout(function() {
-                    chart1.addSeries(chart1CreatedSeries[0]);
-                }, 0);
-                chart1Timeout1 = setTimeout(function() {
-                    chart1.addSeries(chart1CreatedSeries[1]);
-                }, 2000);
-                chart1Timeout2 = setTimeout(function() {
-                    chart1.addSeries(chart1CreatedSeries[2]);
-                }, 4000);
-
-                chart1Timeout3 =setTimeout(function () {
-                    chart1.update({xAxis: {
-                        min: null,
-                        max:null,
-                    }});
-                }, 25000);
-            }
-
-            //Chart 1 specific functions
-            function drawChart1() {
-
-                var jsonStatData = chart1Data;
-                var jsonStatUtflutningurData= chart1bData;
-
-
-                //Extrat Data From JSON Stat
-
-                ds = JSONstat(jsonStatData).Dataset(0);
-
-
-                dsutflutningur = JSONstat(jsonStatUtflutningurData).Dataset(0);
-
-                t = dsutflutningur.Dimension("year").length - 1;
-                year = dsutflutningur.Dimension("year").id;
-
-                yearinnflutningur = ds.Dimension("year").id;
-                yearinnflutningurlength = yearinnflutningur.length
-                var fLen = year.length;
-
-                yearinnflutningurutflutningurdifference = yearinnflutningurlength - fLen;
-
-
-
-                m = dsutflutningur.Dimension("month").id;
-
-                //Format Data
-
-
-
-
-                var innflutningurdata = [];
-                var utflutningurdata = [];
-                var nettoflytingdata = [];
-
-                var yaxisinnflutningur = [];
-                var yaxisutflutningur = [];
-
-                for (var i = 0; i < fLen; i++) {
-
-
-                    innflutningur = ds.Data({ "BEC-groups": "0", "year": ds.Dimension("year").id[i + yearinnflutningurutflutningurdifference] }, false).filter(function(n) { return n; });
-                    utflutningur = dsutflutningur.Data({ "unit": "0", "commodity group": "0", "year": dsutflutningur.Dimension("year").id[i] }, false).filter(function(n) { return n; });
-
-
-                    for (var j = 0; j < utflutningur.length; j++) {
-
-                        yaxisinnflutningur.push[innflutningur[j]];
-                        yaxisutflutningur.push[-utflutningur[j]];
-
-                        var month = m[j];
-
-                        if(month.length == 1) {
-                            month = "0" + month;
-                        }
-
-
-                        innflutningurdata.push([Date.parse(year[i] + "-" + month), -innflutningur[j]/1000]);
-                        utflutningurdata.push([Date.parse(year[i] + "-" + month), utflutningur[j]/1000]);
-                        nettoflytingdata.push([Date.parse(year[i] + "-" + month), (utflutningur[j] - innflutningur[j])/1000]);
-
-                    }
-                }
-
-                var chart1_last_month = innflutningurdata[innflutningurdata.length - 1];
-                chart1_last_month = chart1_last_month[0];
-
-                //Build Series
-                var createdSeries = [{
-                    name: "Útflutningur",
-                    data: utflutningurdata,
-                    color: "#7fb800",
-                    borderWidth: 0,
-                    tooltip: {
-                        valueDecimals: 0
-                    }
-                }, {
-                    name: "Innflutningur",
-                    data: innflutningurdata,
-                    color: "#00a6ed",
-                    borderWidth: 0,
-
-                    tooltip: {
-                        valueDecimals: 0
-                    }
-                }, {
-                    name: "Handilsjavni",
-                    type: "spline",
-                    data: nettoflytingdata,
-                    color: "#fff",
-                    borderWidth: 0,
-                    tooltip: {
-                        valueDecimals: 0
-                    },
-                    marker: {
-                        enabled: false
-                    }
-                }];
-                chart1CreatedSeries = createdSeries;
-
-
-                //Build Title
-                var title = ds.label;
-
-                //Build subtitle
-                var subtitle = ds.source;
-
-                //Build Tooltip
-                var tooltipFunction = function () {
-                    var s = "<b>" + Highcharts.dateFormat("%Y-%b", this.x) + "</b>";
-                    $.each(this.points,
-                        function (i, point) {
-                            s += "<br/>" + point.series.name + ": " + Highcharts.numberFormat(point.y, 0.0, ",", ".");
-                        });
-
-                    return s;
-                }
-
-                //Build Chart
-                $("#chart1").highcharts({
-                    credits: {
-                        enabled: false
-                    },
-                    chart: {
-                        type: "column",
-                        backgroundColor: "rgba(255, 255, 255, 0)",
-                        borderWidth: 0,
-                        renderTo: "container",
-                        events: {
-                            load: function () {
-                                chart1 = this;
-                            }
-
-                        }
-                    },
-                    rangeSelector: {
-                        enabled: false
-                    },
-
-                    exporting: {
-                        enabled: false
-                    },
-
-                    navigator: {
-                        enabled: false
-                    },
-                    title: {
-                        text: ""
-                    },
-                    legend: {
-                        layout: "horizontal",
-                        align: "center",
-                        verticalAlign: "top",
-
-                        itemStyle: {
-                            color: "#fff",
-                            fontWeight: "normal"
-                        }
-                    },
-                    xAxis: {
-                        title: {
-                            enabled: false
-                        },
-                        type: "datetime",
-                        min: chart1_last_month - 65743595833,
-                        max: chart1_last_month,
-                        labels: {
-                            style: {
-                                color: "#fff",
-                                fontSize: "11px"
-                            }
-                        },
-
-                    },
-                    yAxis: {
-                        title: {
-                            text: "",
-                            style: {
-                                color: "#fff",
-                                fontWeight: "normal",
-                                fontSize: "12px"
-                            }
-                        },
-                        lineColor: "#fff",
-                        tickColor: "#fff",
-                        labels: {
-                            formatter: function () {
-                                return Highcharts.numberFormat(Math.abs(this.value),0);
-                            },
-                            style: {
-                                color: "#fff",
-                                font: "11px"
-                            }
-                        },
-                    },
-                    tooltip: {
-                        enabled: false
-                    },
-                    plotOptions: {
-                        series: {
-                            stacking: "normal",
-                            showInNavigator: true,
-                            dataGrouping:{
-                                enabled: true,
-                                approximation: "sum",
-                                units:[ ["year", null]]
-                            }
-                        },
-
-                        
-
-                    },
-                    series: []
-                });
-            }
-
-            function loadDataAndBuildChart1() {
-                POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_innbec.px", {
-                    "query": [
-                        {
-                              "code": "BEC-groups",
-                              "selection": {
-                                "filter": "item",
-                                "values": [
-                                  "0"
-                                ]
-                              }
-                            },
-                        {
-                          "code": "month",
-                          "selection": {
-                            "filter": "item",
-                            "values": [
-                              "1",
-                              "2",
-                              "3",
-                              "4",
-                              "5",
-                              "6",
-                              "7",
-                              "8",
-                              "9",
-                              "10",
-                              "11",
-                              "12"
-                            ]
-                          }
-                        }
-                    ],
-                    "response": {
-                        "format": "json-stat"
-
-                    }
-
-                },function(data) {
-                    chart1Data = data;
-                    loadDataAndBuildChart1b();
-                } );
-            }
-
-
-            function loadDataAndBuildChart1b() {
-                POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_ututgr.px", {
-                    "query": [
-                        {
-                          "code": "unit",
-                          "selection": {
-                            "filter": "item",
-                            "values": [
-                              "0"
-                            ]
-                          }
-                        },
-                        {
-                              "code": "commodity group",
-                              "selection": {
-                                "filter": "item",
-                                "values": [
-                                  "0"
-                                ]
-                              }
-                            },
-                        {
-                          "code": "month",
-                          "selection": {
-                            "filter": "item",
-                            "values": [
-                              "1",
-                              "2",
-                              "3",
-                              "4",
-                              "5",
-                              "6",
-                              "7",
-                              "8",
-                              "9",
-                              "10",
-                              "11",
-                              "12"
-                            ]
-                          }
-                        }
-                    ],
-                    "response": {
-                        "format": "json-stat"
-
-                    }
-
-                },function(data) {
-                    chart1bData = data;
-                    drawChart1();
-                    startAnimatingChart1();
-                } );
-            }
-
-
-
-
 
 //---------------------------------------------------------
 //                                CHART 8
@@ -2057,248 +2301,6 @@
 
 
 
-//---------------------------------------------------------
-//                       CHART 2
-//---------------------------------------------------------
-            var chart2;
-            var chart2Data;
-            var chart2_last_month;
-            var chart2Timeout0;
-
-            function startAnimatingChart2() {
-                clearTimeout(chart2Timeout0);
-
-                drawChart2();
-
-                chart2Timeout0 = setTimeout(function () {
-                    chart2.update({xAxis: {
-                        min: null,
-                        max: null
-                    }});
-                }, 25000);
-            }
-
-            //Chart 9 specific functions
-            function drawChart2() {
-                var jsonStatData = chart2Data;
-
-                //Extrat Data From JSON Stat
-                ds = JSONstat(jsonStatData).Dataset(0);
-                t = ds.Dimension("year").length - 1;
-                year = ds.Dimension("year").id;
-
-                var fLen = year.length;
-                m = ds.Dimension("month").id;
-
-                //Format Data
-                var utflutningurdata = [];
-
-                for (var i = 0; i < fLen; i++) {
-                    var utflutningur = ds.Data({ "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
-
-                    for (var j = 0; j < utflutningur.length; j++) {
-                        var month = m[j];
-                        if(month.length == 1) {
-                            month = "0" + month;
-                        }
-                        utflutningurdata.push([Date.parse(year[i] + "-" + month), utflutningur[j]*0.001]);
-                    }
-                }
-
-
-
-
-
-                var chart2_last_month = utflutningurdata[utflutningurdata.length - 1];
-                chart2_last_month = chart2_last_month[0];
-
-                //Build Series
-                var createdSeries = [{
-                    name: "Útflutningur",
-                    data: utflutningurdata,
-                    color: "#fff",
-                    tooltip: {
-                        valueDecimals: 1
-                    }
-                }
-                ];
-
-                //Build Title
-                var title = ds.label;
-
-                //Build subtitle
-                var subtitle = ds.source;
-
-                //Build Tooltip
-                var tooltipFunction = function () {
-                    var s = "<b>" + Highcharts.dateFormat("%Y-%b", this.x) + "</b>";
-                    $.each(this.points,
-                        function (i, point) {
-                            s += "<br/>" + point.series.name + ": " + Highcharts.numberFormat(point.y, 0.0, ",", ".");
-                        });
-
-                    return s;
-                }
-
-                //Build Chart
-                $("#chart2").highcharts({
-                    credits: {
-                        enabled: false
-                    },
-                    chart: {
-                        type:"line",
-                        backgroundColor: "rgba(255, 255, 255, 0)",
-                        borderWidth: 0,
-                        renderTo: "container",
-                        events: {
-                            load: function () {
-                                chart2 = this;
-                            }
-                        }
-                    }
-                    ,
-                    rangeSelector: {
-                        enabled: false
-                    },
-
-                    exporting: {
-                        enabled: false
-                    },
-                    navigator: {
-                        enabled: false
-                    },
-                    title: {
-                        text: ""
-                    },
-                    legend: {
-                        layout: "horizontal",
-                        align: "center",
-                        verticalAlign: "top",
-
-                        itemStyle: {
-                            color: "#fff",
-                            fontWeight: "normal"
-                        }
-                    },
-                    xAxis: {
-                        title: {
-                            enabled: false
-                        },
-                        tickInterval: 2629746000,
-                        type: "datetime",
-                        lineColor: "#fff",
-                        tickColor: "#fff",
-                        min: chart2_last_month - 65743595833,
-                        max: chart2_last_month,
-                        labels: {
-                            style: {
-                                color: "#fff",
-                                fontSize: "11px"
-                            }
-                        }
-
-                    },
-                    yAxis: {
-                        title: {
-                            text: "",
-                            style: {
-                                color: "#fff",
-                                fontWeight: "normal",
-                                fontSize: "12px"
-                            }
-                        },
-                        lineColor: "#fff",
-                        tickColor: "#fff",
-                        labels: {
-                            formatter: function () {
-                                return Highcharts.numberFormat(this.value,0) + "";
-                            },
-                            style: {
-                                color: "#fff",
-                                fontSize: "11px"
-                            }
-                        },
-                    },
-                    tooltip: {
-                        enabled: false
-                    },
-                    legend: {
-                        enabled: false
-                    },
-                    plotOptions: {
-                        line: {
-                            marker: {
-                                enabled: false
-                            },
-                            dataLabels: {
-                                enabled: true,
-                                color: "#FFF",
-                                useHTML: true,
-                                crop: false,
-                                overflow: false,
-                                formatter: function() {
-                                  var last  = this.series.data[this.series.data.length - 1];
-                                  if (this.point.category === last.category && this.point.y === last.y) {
-                                    return ('<div class="MyDataLabelTooltip"><span class="datetext">' + Highcharts.dateFormat("%b &apos;%y",this.point.x) + "</span><br />" + Highcharts.numberFormat(this.point.y,0) + " mió" + "</div>");
-                                  }
-                                  else {return};
-                                }
-                            }
-                        },
-                        series: {
-                            showInNavigator: true
-                        }
-                    },
-                    series: createdSeries
-                });
-            }
-
-            function loadDataAndBuildChart2() {
-                POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_ututgr.px", {
-                    "query": [
-                        {
-                            "code": "unit",
-                            "selection": {
-                                "filter": "item",
-                                "values": [
-                                    "0"
-                                ]
-                            }
-                        },
-                        {
-                            "code": "month",
-                            "selection": {
-                                "filter": "item",
-                                "values": [
-                                    "1",
-                                    "2",
-                                    "3",
-                                    "4",
-                                    "5",
-                                    "6",
-                                    "7",
-                                    "8",
-                                    "9",
-                                    "10",
-                                    "11",
-                                    "12"
-                                ]
-                            }
-                        }
-                    ],
-                    "response": {
-                        "format": "json-stat"
-                    }
-                }, function(data) {
-                    chart2Data = data;
-                    drawChart2();
-                    startAnimatingChart2();
-                });
-            }
-
-
-
-
 
 
 
@@ -2568,7 +2570,6 @@
                 loadDataAndBuildChart8();
                 loadDataAndBuildChart2();
                 loadDataAndBuildChart10();
-
                 loadDataAndBuildChart13();
             });
 </script>
@@ -2623,14 +2624,14 @@
             </div>
         </section>
 
-        <section data-background="assets/avreidingar.jpg" data-autoslide="4000">
+        <section data-background="assets/fishmarket.jpg" data-autoslide="4000">
             <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Útflutningslond</h1>
         </section>
-        <section data-state="avreidingar" data-background="assets/avreidingar.jpg">
+        <section data-state="fishmarket" data-background="assets/fishmarket.jpg">
             <div class="infobox blue">
                 <div class="background"></div>
-                <h2>Topp 10 lond<h2/>
-                <p>í mió</p>
+                <h2>Topp 10 útflutningslond<h2/>
+                <p>Seinastu 12 mánaðirnar. Í mió. kr.</p>
                     <div>
                         <div id="chart13"></div>
                     </div>

@@ -1665,43 +1665,43 @@
 
 
 //---------------------------------------------------------
-//                                CHART 8
+//                                CHART 3
 //---------------------------------------------------------
 
-            var chart8;
-            var chart8Data;
-            var chart8CreatedSeries;
-            var chart8_last_month;
-            var chart8Timeout0;
-            var chart8Timeout1;
-            var chart8Timeout2;
-            var chart8Timeout3;
-            var chart8Timeout4;
+            var chart3;
+            var chart3Data;
+            var chart3CreatedSeries;
+            var chart3_last_month;
+            var chart3Timeout0;
+            var chart3Timeout1;
+            var chart3Timeout2;
+            var chart3Timeout3;
+            var chart3Timeout4;
 
-            function startAnimatingChart8() {
-                clearTimeout(chart8Timeout0);
-                clearTimeout(chart8Timeout1);
-                clearTimeout(chart8Timeout2);
-                clearTimeout(chart8Timeout3);
-                clearTimeout(chart8Timeout4);
+            function startAnimatingChart3() {
+                clearTimeout(chart3Timeout0);
+                clearTimeout(chart3Timeout1);
+                clearTimeout(chart3Timeout2);
+                clearTimeout(chart3Timeout3);
+                clearTimeout(chart3Timeout4);
 
-                drawChart8();
+                drawChart3();
 
-                chart8Timeout0 = setTimeout(function() {
-                    chart8.addSeries(chart8CreatedSeries[0]);
+                chart3Timeout0 = setTimeout(function() {
+                    chart3.addSeries(chart3CreatedSeries[0]);
                 }, 100);
-                chart8Timeout1 = setTimeout(function() {
-                    chart8.addSeries(chart8CreatedSeries[1]);
+                chart3Timeout1 = setTimeout(function() {
+                    chart3.addSeries(chart3CreatedSeries[1]);
                 }, 2000);
-                chart8Timeout2 = setTimeout(function() {
-                    chart8.addSeries(chart8CreatedSeries[2]);
+                chart3Timeout2 = setTimeout(function() {
+                    chart3.addSeries(chart3CreatedSeries[2]);
                 }, 4000);
-                chart8Timeout3 = setTimeout(function() {
-                    chart8.addSeries(chart8CreatedSeries[3]);
+                chart3Timeout3 = setTimeout(function() {
+                    chart3.addSeries(chart3CreatedSeries[3]);
                 }, 6000);
 
-                chart8Timeout4 =setTimeout(function () {
-                    chart8.update({xAxis: {
+                chart3Timeout4 =setTimeout(function () {
+                    chart3.update({xAxis: {
                         min: null,
                         max: null,
                     }});
@@ -1709,9 +1709,9 @@
             }
 
             //Chart 8 specific functions
-            function drawChart8() {
+            function drawChart3() {
 
-                var jsonStatData = chart8Data;
+                var jsonStatData = chart3Data;
                 //Extrat Data From JSON Stat
                 ds = JSONstat(jsonStatData).Dataset(0);
                 t = ds.Dimension("year").length - 1;
@@ -1754,8 +1754,8 @@
 
 
 
-                var chart8_last_month = onnurfiskaslogdata[onnurfiskaslogdata.length - 1];
-                chart8_last_month = chart8_last_month[0];
+                var chart3_last_month = onnurfiskaslogdata[onnurfiskaslogdata.length - 1];
+                chart3_last_month = chart3_last_month[0];
 
                 //Build Series
                 var createdSeries = [
@@ -1800,7 +1800,7 @@
                     index: 0
                 }
                 ];
-                chart8CreatedSeries = createdSeries;
+                chart3CreatedSeries = createdSeries;
 
 
                 //Build Title
@@ -1821,7 +1821,7 @@
                 }
 
                 //Build Chart
-                $("#chart8").highcharts({
+                $("#chart3").highcharts({
                     credits: {
                         enabled: false
                     },
@@ -1832,7 +1832,7 @@
                         renderTo: "container",
                         events: {
                             load: function () {
-                                chart8 = this;
+                                chart3 = this;
                             }
 
                         }
@@ -1866,8 +1866,8 @@
                             enabled: false
                         },
                         type: "datetime",
-                        min: chart8_last_month - 65743595833,
-                        max: chart8_last_month,
+                        min: chart3_last_month - 65743595833,
+                        max: chart3_last_month,
                         labels: {
                             style: {
                                 color: "#fff",
@@ -1925,7 +1925,7 @@
                 });
             }
 
-            function loadDataAndBuildChart8() {
+            function loadDataAndBuildChart3() {
                 POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_ututgr.px", {
                     "query": [
                         {
@@ -1982,9 +1982,9 @@
 
                     }
                 },function(data) {
-                    chart8Data = data;
-                    drawChart8();
-                    startAnimatingChart8();
+                    chart3Data = data;
+                    drawChart3();
+                    startAnimatingChart3();
                 } );
             }
 
@@ -2567,8 +2567,8 @@
             //START LOADING AND BUILDING CHARTS
             $(function () {
                 loadDataAndBuildChart1();
-                loadDataAndBuildChart8();
                 loadDataAndBuildChart2();
+                loadDataAndBuildChart3();
                 loadDataAndBuildChart10();
                 loadDataAndBuildChart13();
             });
@@ -2596,10 +2596,10 @@
 
 
 
-        <section data-background="assets/fiskavoruutflutningur.jpg" data-autoslide="4000">
+        <section data-background="assets/fishmarket.jpg" data-autoslide="4000">
             <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Fiskavørur</h1>
         </section>
-        <section data-state="utflutningur" data-background="assets/fiskavoruutflutningur.jpg">
+        <section data-state="utflutningur" data-background="assets/fishmarket.jpg">
             <div class="infobox blue left">
                 <div class="background"></div>
                 <h2>Útflutningur av fiskavørum<h2/>
@@ -2613,21 +2613,21 @@
 
 
 
-        <section data-state="fiskavoruutflutningur" data-background="assets/fiskavoruutflutningur.jpg">
+        <section data-state="fiskavoruutflutningur" data-background="assets/fishmarket.jpg">
             <div class="infobox blue">
                 <div class="background"></div>
                 <h2>Útflutningur av fiskavørum<h2/>
                 <p>í mió. kr.</p>
                     <div>
-                        <div id="chart8"></div>
+                        <div id="chart3"></div>
                     </div>
             </div>
         </section>
 
-        <section data-background="assets/fishmarket.jpg" data-autoslide="4000">
+        <section data-background="assets/moscow.jpg" data-autoslide="4000">
             <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Útflutningslond</h1>
         </section>
-        <section data-state="fishmarket" data-background="assets/fishmarket.jpg">
+        <section data-state="utflutningslond" data-background="assets/moscow.jpg">
             <div class="infobox blue">
                 <div class="background"></div>
                 <h2>Topp 10 útflutningslond<h2/>
@@ -2702,44 +2702,19 @@
 
 
 
-
-
-            Reveal.addEventListener("burdaravlop", function () {
-                startAnimatingChart3();
-            }, false);
-
-            Reveal.addEventListener("arbeidsloysi", function () {
-                startAnimatingChart4();
-            }, false);
-
-
-            Reveal.addEventListener("lontakarar", function () {
-                startAnimatingChart5();
-            }, false);
-
-            Reveal.addEventListener("lonargjaldingar", function () {
-                startAnimatingChart6();
-            }, false);
-
             Reveal.addEventListener("innutflutningur", function () {
                 startAnimatingChart1();
             }, false);
 
-            Reveal.addEventListener("fiskavoruutflutningur", function () {
-                startAnimatingChart8();
-            }, false);
 
-            Reveal.addEventListener("avreidingar", function () {
-                startAnimatingChart13();
-            }, false);
-
-            Reveal.addEventListener("gistingar", function () {
+            Reveal.addEventListener("utflutningur", function () {
                 startAnimatingChart2();
             }, false);
 
-            Reveal.addEventListener("pristal", function () {
-                startAnimatingChart10();
+            Reveal.addEventListener("utflutningslond", function () {
+                startAnimatingChart3();
             }, false);
+
 
             Reveal.addEventListener("fragmentshown", function (event) {
                 // Fragmentlistener

@@ -2511,30 +2511,17 @@
             }
 
             function loadDataAndBuildChart10() {
-                POST("https://statbank.hagstova.fo/api/v1/fo/H2/IP/IP02/pris_hovb.px", {
+                POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_utlond.px", {
                     "query": [
                             {
-                              "code": "commodity groups",
+                              "code": "country of consumption",
                               "selection": {
                                 "filter": "item",
                                 "values": [
                                   "BRP"
                                 ]
                               }
-                            },
-                            {
-                              "code": "quarters",
-                              "selection": {
-                                "filter": "item",
-                                "values": [
-                                  "Q1",
-                                  "Q2",
-                                  "Q3",
-                                  "Q4"
-                                ]
-                              }
                             }
-
 
                     ],
                     "response": {
@@ -2612,7 +2599,6 @@
 
 
 
-
         <section data-state="fiskavoruutflutningur" data-background="assets/fishmarket.jpg">
             <div class="infobox blue">
                 <div class="background"></div>
@@ -2633,26 +2619,12 @@
                 <h2>Topp 10 útflutningslond<h2/>
                 <p>Seinastu 12 mánaðirnar. Í mió. kr.</p>
                     <div>
-                        <div id="chart13"></div>
+                        <div></div>
                     </div>
             </div>
         </section>
 
 
-
-        <section data-background="assets/pristal.jpg" data-background-transition="fade" data-autoslide="4000">
-            <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Brúkaraprístalið</h1>
-        </section>
-        <section data-state="pristal" data-background="assets/pristal.jpg">
-            <div class="infobox blue left">
-                <div class="background"></div>
-                <h2>Brúkaraprístalið<h2/>
-                <p></p>
-                    <div>
-                        <div id="chart10"></div>
-                    </div>
-            </div>
-        </section>
 
 
 <!--        <section data-background="assets/fatakravadi.jpg" data-autoslide="4000">
@@ -2706,14 +2678,18 @@
                 startAnimatingChart1();
             }, false);
 
-
             Reveal.addEventListener("utflutningur", function () {
                 startAnimatingChart2();
             }, false);
 
-            Reveal.addEventListener("utflutningslond", function () {
+            Reveal.addEventListener("fiskavoruutflutningur", function () {
                 startAnimatingChart3();
             }, false);
+
+            Reveal.addEventListener("utflutningslond", function () {
+                startAnimatingChart4();
+            }, false);
+
 
 
             Reveal.addEventListener("fragmentshown", function (event) {

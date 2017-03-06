@@ -1335,7 +1335,7 @@
                         enabled: false
                     },
                     chart: {
-                        type: "line",
+
                         backgroundColor: "rgba(255, 255, 255, 0)",
                         borderWidth: 0,
                         renderTo: "container",
@@ -1416,13 +1416,13 @@
                     		marker: {
                     			enabled: false
                     		}
-                    	},                    	
-                        series: {
+                    	},
 
-                            showInNavigator: true,
+                        series: {
                             dataGrouping:{
                                 enabled: true,
-                                units:[ ["year", [null]]]
+                                units:[ ["year", [null]]],
+                                groupPixelWidth: 10
                             },
                         },
 

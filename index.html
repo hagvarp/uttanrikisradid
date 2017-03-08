@@ -676,6 +676,258 @@
 
 
 //---------------------------------------------------------
+//                       CHART 9
+//---------------------------------------------------------
+            var chart9;
+            var chart9Data;
+            var chart9_last_month;
+            var chart9Timeout0;
+
+            function startAnimatingChart9() {
+                clearTimeout(chart9Timeout0);
+
+                drawChart9();
+
+                chart9Timeout0 = setTimeout(function () {
+                    chart9.update({xAxis: {
+                        min: null,
+                        max: null
+                    }});
+                }, 25000);
+            }
+
+            //Chart 9 specific functions
+            function drawChart9() {
+                var jsonStatData = chart9Data;
+
+                //Extrat Data From JSON Stat
+                ds = JSONstat(jsonStatData).Dataset(0);
+                t = ds.Dimension("year").length - 1;
+                year = ds.Dimension("year").id;
+
+                var fLen = year.length;
+                m = ds.Dimension("month").id;
+
+                //Format Data
+                var tilfarvinnadata = [];
+                var husarhalddata = [];
+
+                for (var i = 0; i < fLen; i++) {
+                    var husarhald = ds.Data({ "BEC-groups": "41", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+                    var havlandbunad = ds.Data({ "BEC-groups": "1", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+                    var byggivirki = ds.Data({ "BEC-groups": "5", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+                    var fiskivirki = ds.Data({ "BEC-groups": "11", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+                    var onnurframleidlsa = ds.Data({ "BEC-groups": "51", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+
+
+                    for (var j = 0; j < havlandbunad.length; j++) {
+                        var month = m[j];
+                        if(month.length == 1) {
+                            month = "0" + month;
+                        }
+                        tilfarvinnadata.push([Date.parse(year[i] + "-" + month), (havlandbunad[j] + byggivirki[j] + fiskivirki[j] + onnurframleidlsa[j])*0.001]);
+                        husarhalddata.push([Date.parse(year[i] + "-" + month), (husarhald[j])*0.001]);
+                    }
+                }
+
+
+
+
+
+                var chart9_last_month = tilfarvinnadata[tilfarvinnadata.length - 1];
+                chart9_last_month = chart9_last_month[0];
+
+                //Build Series
+                var createdSeries = [{
+                    name: "Tilfar til vinnu",
+                    data: tilfarvinnadata,
+                    color: "#00a6ed",
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                },
+                {
+                    name: "Húsarhald",
+                    data: husarhalddata,
+                    color: "#fb6107",
+                    tooltip: {
+                        valueDecimals: 1
+                    }
+                }                
+                ];
+
+                //Build Title
+                var title = ds.label;
+
+                //Build subtitle
+                var subtitle = ds.source;
+
+                //Build Tooltip
+                var tooltipFunction = function () {
+                    var s = "<b>" + Highcharts.dateFormat("%Y-%b", this.x) + "</b>";
+                    $.each(this.points,
+                        function (i, point) {
+                            s += "<br/>" + point.series.name + ": " + Highcharts.numberFormat(point.y, 0.0, ",", ".");
+                        });
+
+                    return s;
+                }
+
+                //Build Chart
+                $("#chart9").highcharts({
+                    credits: {
+                        enabled: false
+                    },
+                    chart: {
+                        type:"line",
+                        backgroundColor: "rgba(255, 255, 255, 0)",
+                        borderWidth: 0,
+                        renderTo: "container",
+                        events: {
+                            load: function () {
+                                chart9 = this;
+                            }
+                        }
+                    }
+                    ,
+                    rangeSelector: {
+                        enabled: false
+                    },
+
+                    exporting: {
+                        enabled: false
+                    },
+                    navigator: {
+                        enabled: false
+                    },
+                    title: {
+                        text: ""
+                    },
+                    legend: {
+                        layout: "horizontal",
+                        align: "center",
+                        verticalAlign: "top",
+                        itemStyle: {
+                            color: "#fff",
+                            fontWeight: "normal"
+                        }
+                    },
+                    xAxis: {
+                        title: {
+                            enabled: false
+                        },
+                        tickInterval: 2629746000,
+                        type: "datetime",
+                        lineColor: "#fff",
+                        tickColor: "#fff",
+                        min: chart9_last_month - 65743595833,
+                        max: chart9_last_month,
+                        labels: {
+                            style: {
+                                color: "#fff",
+                                fontSize: "11px"
+                            }
+                        }
+
+                    },
+                    yAxis: {
+                        title: {
+                            text: "",
+                            style: {
+                                color: "#fff",
+                                fontWeight: "normal",
+                                fontSize: "12px"
+                            }
+                        },
+                        lineColor: "#fff",
+                        tickColor: "#fff",
+                        labels: {
+                            formatter: function () {
+                                return Highcharts.numberFormat(this.value,0) + "";
+                            },
+                            style: {
+                                color: "#fff",
+                                fontSize: "11px"
+                            }
+                        },
+                    },
+                    tooltip: {
+                        enabled: false
+                    },
+                    plotOptions: {
+                        line: {
+                            marker: {
+                                enabled: false
+                            },
+                            lineWidth: 4
+
+                        },
+
+                        series: {
+                            dataGrouping:{
+                                enabled: true,
+                                units:[ ["year", [null]]],
+                                groupPixelWidth: 30
+                            },
+                        },
+
+                    },
+                    series: createdSeries
+                });
+            }
+
+            function loadDataAndBuildChart9() {
+                POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_innbec.px", {
+                    "query": [
+                        {
+                          "code": "BEC-groups",
+                          "selection": {
+                            "filter": "item",
+                            "values": [
+                                  "1",
+                                  "5",
+                                  "11",
+                                  "41",
+                                  "51"
+                            ]
+                          }
+                        },
+                        {
+                            "code": "month",
+                            "selection": {
+                                "filter": "item",
+                                "values": [
+                                    "1",
+                                    "2",
+                                    "3",
+                                    "4",
+                                    "5",
+                                    "6",
+                                    "7",
+                                    "8",
+                                    "9",
+                                    "10",
+                                    "11",
+                                    "12"
+                                ]
+                            }
+                        }
+                    ],
+                    "response": {
+                        "format": "json-stat"
+                    }
+                }, function(data) {
+                    chart9Data = data;
+                    drawChart9();
+                    startAnimatingChart9();
+                });
+            }
+
+
+
+
+
+//---------------------------------------------------------
 //                       CHART 2
 //---------------------------------------------------------
             var chart2;
@@ -3008,7 +3260,8 @@
                 loadDataAndBuildChart5(); 
                 loadDataAndBuildChart6();   
                 loadDataAndBuildChart7();   
-                loadDataAndBuildChart8();                                                           
+                loadDataAndBuildChart8();  
+                loadDataAndBuildChart9();                                                                          
                 loadDataAndBuildChart10();
             });
 </script>
@@ -3032,10 +3285,10 @@
         </section>
 
 
-        <section data-background="assets/fishmarket.jpg" data-autoslide="4000">
+        <section data-background="assets/innflutningur.jpg" data-autoslide="4000">
             <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Innflutningur</h1>
         </section>
-        <section data-state="innflutninguruttanskip" data-background="assets/fishmarket.jpg">
+        <section data-state="innflutninguruttanskip" data-background="assets/innflutningur.jpg">
             <div class="infobox blue">
                 <div class="background"></div>
                 <h2>Innflutningur <h2/>
@@ -3044,7 +3297,23 @@
                         <div id="chart8"></div>
                     </div>
             </div>
-        </section>     
+        </section>    
+
+
+
+        <section data-background="assets/innflutningur2.jpg" data-autoslide="4000">
+            <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Innflutningur</h1>
+        </section>
+        <section data-state="innflutningurslag" data-background="assets/innflutningur2.jpg">
+            <div class="infobox blue">
+                <div class="background"></div>
+                <h2>Innflutningur <h2/>
+                <p>Í mió. kr.</p>
+                    <div>
+                        <div id="chart9"></div>
+                    </div>
+            </div>
+        </section>             
 
 
         <section data-background="assets/fishmarket.jpg" data-autoslide="4000">
@@ -3196,6 +3465,9 @@
                 startAnimatingChart8();
             }, false);
 
+            Reveal.addEventListener("innflutningurslag", function () {
+                startAnimatingChart9();
+            }, false);
 
             Reveal.addEventListener("utflutningur", function () {
                 startAnimatingChart2();

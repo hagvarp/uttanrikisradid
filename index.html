@@ -7,7 +7,7 @@
 
     <meta http-equiv="refresh" content="3600">
 
-    <title>Vit taka samfelagspulsin | Hagstova Føroya</title>
+    <title>Uttanríkisráðið | Hagvarp</title>
 
     <link rel="stylesheet" href="css/reveal.css">
     <link rel="stylesheet" href="css/custom.css">
@@ -1169,270 +1169,6 @@
 
 
 
-
-
-//---------------------------------------------------------
-//                                CHART 3
-//---------------------------------------------------------
-            var chart3;
-            var chart3Data;
-            var chart3CreatedSeries;
-            var chart3_last_month;
-            var chart3Timeout0;
-            var chart3Timeout1;
-            var chart3Timeout2;
-            var chart3Timeout3;
-
-            function startAnimatingChart3() {
-                clearTimeout(chart3Timeout0);
-                clearTimeout(chart3Timeout1);
-                clearTimeout(chart3Timeout2);
-                clearTimeout(chart3Timeout3);
-
-                drawChart3();
-
-                chart3Timeout0 = setTimeout(function() {
-                    chart3.addSeries(chart3CreatedSeries[0]);
-                }, 0);
-                chart3Timeout1 = setTimeout(function() {
-                    chart3.addSeries(chart3CreatedSeries[1]);
-                }, 2000);
-                chart3Timeout2 = setTimeout(function() {
-                    chart3.addSeries(chart3CreatedSeries[2]);
-                }, 4000);
-
-                chart3Timeout3 =setTimeout(function () {
-                    chart3.update({xAxis: {
-                        min: null,
-                        max: null
-                    }});
-                }, 25000);
-            }
-
-            //Chart 3 specific functions
-            function drawChart3() {
-
-                var jsonStatData = chart3Data;
-                //Extrat Data From JSON Stat
-                ds = JSONstat(jsonStatData).Dataset(0);
-                t = ds.Dimension("year").length - 1;
-                year = ds.Dimension("year").id;
-                var fLen = year.length;
-                m = ds.Dimension("month").id;
-
-                //Format Data
-
-
-
-                var tilflytingdata = [];
-                var fraflytingdata = [];
-                var nettoflytingdata = [];
-
-                var yaxistilflyting = [];
-                var yaxisfraflyting = [];
-
-                for (var i = 0; i < fLen; i++) {
-                    tilflyting = ds.Data({ "changes": "BORNE", "village/city": "999999", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
-                    fraflyting = ds.Data({ "changes": "DEAD", "village/city": "999999", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
-
-                    for (var j = 0; j < tilflyting.length; j++) {
-                        mon = m[j].replace("M", "-");
-
-                        yaxistilflyting.push[tilflyting[j]];
-                        yaxisfraflyting.push[-fraflyting[j]];
-
-                        tilflytingdata.push([Date.parse(year[i] + mon), tilflyting[j]]);
-                        fraflytingdata.push([Date.parse(year[i] + mon), -fraflyting[j]]);
-                        nettoflytingdata.push([Date.parse(year[i] + mon), tilflyting[j] - fraflyting[j]]);
-
-                    }
-                }
-
-                var chart3_last_month = tilflytingdata[tilflytingdata.length - 1];
-                chart3_last_month = chart3_last_month[0];
-
-                //Build Series
-                var createdSeries = [{
-                    name: "Fødd",
-                    data: tilflytingdata,
-                    color: "#7fb800",
-                    borderWidth: 0,
-                    tooltip: {
-                        valueDecimals: 0
-                    }
-                }, {
-                    name: "Deyð",
-                    data: fraflytingdata,
-                    color: "#9b1212",
-                    borderWidth: 0,
-                    tooltip: {
-                        valueDecimals: 0
-                    }
-                }, {
-                    name: "Burðaravlop",
-                    type: "spline",
-                    data: nettoflytingdata,
-                    color: "#fff",
-                    borderWidth: 0,
-                    tooltip: {
-                        valueDecimals: 0
-                    },
-                    marker: {
-                        enabled: false
-                    }
-                }];
-                chart3CreatedSeries = createdSeries;
-
-
-                //Build Title
-                var title = ds.label;
-
-                //Build subtitle
-                var subtitle = ds.source;
-
-                //Build Tooltip
-                var tooltipFunction = function () {
-                    var s = "<b>" + Highcharts.dateFormat("%Y-%b", this.x) + "</b>";
-                    $.each(this.points,
-                        function (i, point) {
-                            s += "<br/>" + point.series.name + ": " + Highcharts.numberFormat(point.y, 0.0, ",", ".");
-                        });
-
-                    return s;
-                }
-
-                //Build Chart
-                $("#chart3").highcharts({
-                    credits: {
-                        enabled: false
-                    },
-                    chart: {
-                        type: "line",
-                        backgroundColor: "rgba(255, 255, 255, 0)",
-                        borderWidth: 0,
-                        renderTo: "container",
-                        events: {
-                            load: function () {
-                                chart3 = this;
-                            }
-
-                        }
-                    },
-                    rangeSelector: {
-                        enabled: false
-                    },
-
-                    exporting: {
-                        enabled: false
-                    },
-
-                    navigator: {
-                        enabled: false
-                    },
-                    title: {
-                        text: ""
-                    },
-                    legend: {
-                        layout: "horizontal",
-                        align: "center",
-                        verticalAlign: "top",
-
-                        itemStyle: {
-                            color: "#fff",
-                            fontWeight: "normal"
-                        }
-                    },
-                    xAxis: {
-                        title: {
-                            enabled: false
-                        },
-                        type: "datetime",
-                        min: chart3_last_month - 65743595833,
-                        max: chart3_last_month,
-                        labels: {
-                            style: {
-                                color: "#fff",
-                                fontSize: "11px"
-                            }
-                        }
-                    },
-                    yAxis: {
-                        title: {
-                            text: "",
-                            style: {
-                                color: "#fff",
-                                fontWeight: "normal",
-                                fontSize: "12px"
-                            }
-                        },
-                        lineColor: "#fff",
-                        tickColor: "#fff",
-                        labels: {
-                            formatter: function () {
-                                return Highcharts.numberFormat(Math.abs(this.value), 0);
-                            },
-                            style: {
-                                color: "#fff",
-                                font: "11px"
-                            }
-                        },
-                    },
-                    tooltip: {
-						enabled: false
-                    },
-                    plotOptions: {
-                    	line: {
-                    		marker: {
-                    			enabled: false
-                    		}
-                    	},
-                        series: {
-                            stacking: "normal",
-                            showInNavigator: true,
-                            dataGrouping:{
-                                enabled: true,
-                                units:[ ["year", null]]
-                            }
-                        }
-
-
-                    },
-                    series: []
-                });
-            }
-
-            function loadDataAndBuildChart3() {
-                POST("https://statbank.hagstova.fo/api/v1/fo/H2/IB/IB01/fo_vital_md.px", {
-                    "query": [
-                        {
-                            "code": "village/city",
-                            "selection": {
-                                "filter": "item",
-                                "values": [
-                                    "999999"
-                                ]
-                            }
-                        },
-                        {
-                            "code": "changes",
-                            "selection": {
-                                "filter": "item",
-                                "values": [
-                                    "BORNE", "DEAD"
-                                ]
-                            }
-                        }
-                    ],
-                    "response": {
-                        "format": "json-stat"
-
-                    }
-                },function(data) {
-                    chart3Data = data;
-                    drawChart3();
-                    startAnimatingChart3();
-                } );
-            }
 
 
 
@@ -3056,12 +2792,9 @@
 
                     innflutningur = ds.Data({ "year": ds.Dimension("year").id[i] }, false);
 
-
-
                     utflutningur = dsutflutningur.Data({ "year": dsutflutningur.Dimension("year").id[i] }, false);
 
                     innflutningurdata.push([Date.parse(year[i]), -innflutningur/1000]);
-
 
                     utflutningurdata.push([Date.parse(year[i]), utflutningur/1000]);
                     nettoflytingdata.push([Date.parse(year[i]), (utflutningur - innflutningur)/1000]);
@@ -4332,13 +4065,11 @@
 
 
 
-        <section data-background="assets/innflutningur2.jpg" data-autoslide="4000">
-            <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Innflutningur</h1>
-        </section>
+
         <section data-state="innflutningurslag" data-background="assets/innflutningur2.jpg">
             <div class="infobox blue">
                 <div class="background"></div>
-                <h2>Innflutningur <h2/>
+                <h2>Innflutt til vinnu- og húsarhald <h2/>
                 <p>Í mió. kr.</p>
                     <div>
                         <div id="chart9"></div>
@@ -4375,26 +4106,13 @@
             </div>
         </section>
 
-        <section data-background="assets/innutflutningur.jpg" data-autoslide="4000">
-            <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Útflutningslond</h1>
-        </section>
-        <section data-state="utflutningslond" data-background="assets/innutflutningur.jpg">
-            <div class="infobox blue">
-                <div class="background"></div>
-                <h2>Topp 10 útflutningslond<h2/>
-                <p>Seinastu 12 mánaðirnar. Í mió. kr.</p>
-                    <div>
-                        <div></div>
-                    </div>
-            </div>
-        </section>
 
 
 
         <section data-background="assets/moscow.jpg" data-background-transition="fade" data-autoslide="4000">
             <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Russland</h1>
         </section>
-        <section data-state="russland" data-background="assets/moscow.jpg">
+        <section data-state="russland" data-background="assets/moscow.jpg"  data-autoslide="20000">
             <div class="infobox blue">
                 <div class="background"></div>
                 <h2>Samhandil við Russland<h2/>
@@ -4412,7 +4130,7 @@
         <section data-background="assets/newyork.jpg" data-background-transition="fade" data-autoslide="4000">
             <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />USA</h1>
         </section>
-        <section data-state="usa" data-background="assets/newyork.jpg">
+        <section data-state="usa" data-background="assets/newyork.jpg"  data-autoslide="20000">
             <div class="infobox blue">
                 <div class="background"></div>
                 <h2>Samhandil við USA<h2/>
@@ -4429,7 +4147,7 @@
         <section data-background="assets/london.jpg" data-background-transition="fade" data-autoslide="4000">
             <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Stóra Bretland</h1>
         </section>
-        <section data-state="storabretland" data-background="assets/london.jpg">
+        <section data-state="storabretland" data-background="assets/london.jpg"  data-autoslide="20000">
             <div class="infobox blue">
                 <div class="background"></div>
                 <h2>Samhandil við Stóra Bretland<h2/>
@@ -4443,7 +4161,7 @@
         <section data-background="assets/danmark.jpg" data-background-transition="fade" data-autoslide="4000">
             <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Danmark</h1>
         </section>
-        <section data-state="danmark" data-background="assets/danmark.jpg">
+        <section data-state="danmark" data-background="assets/danmark.jpg"  data-autoslide="20000">
             <div class="infobox blue">
                 <div class="background"></div>
                 <h2>Samhandil við Danmark<h2/>
@@ -4459,7 +4177,7 @@
         <section data-background="assets/tyskland.jpg" data-background-transition="fade" data-autoslide="4000">
             <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Týskland</h1>
         </section>
-        <section data-state="tyskland" data-background="assets/tyskland.jpg">
+        <section data-state="tyskland" data-background="assets/tyskland.jpg"  data-autoslide="20000">
             <div class="infobox blue">
                 <div class="background"></div>
                 <h2>Samhandil við Týskland<h2/>
@@ -4474,7 +4192,7 @@
         <section data-background="assets/noreg.jpg" data-background-transition="fade" data-autoslide="4000">
             <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Noreg</h1>
         </section>
-        <section data-state="noreg" data-background="assets/noreg.jpg">
+        <section data-state="noreg" data-background="assets/noreg.jpg"  data-autoslide="20000">
             <div class="infobox blue">
                 <div class="background"></div>
                 <h2>Samhandil við Noreg<h2/>
@@ -4489,9 +4207,9 @@
 
 
         <section data-background="assets/es.jpg" data-background-transition="fade" data-autoslide="4000">
-            <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />ES</h1>
+            <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Evropa Samveldið</h1>
         </section>
-        <section data-state="es" data-background="assets/es.jpg">
+        <section data-state="es" data-background="assets/es.jpg"  data-autoslide="20000">
             <div class="infobox blue">
                 <div class="background"></div>
                 <h2>Samhandil við ES<h2/>

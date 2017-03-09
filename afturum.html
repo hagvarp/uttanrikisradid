@@ -9,8 +9,8 @@
 
     <title>Uttanríkisráðið | Hagvarp</title>
 
-    <link rel="stylesheet" href="css/reveal.css">
-    <link rel="stylesheet" href="css/custom.css">
+
+    <link rel="stylesheet" href="css/report.css">
 
     <script src="lib/js/JSON-stat/json-stat.js"></script>
     <script src="lib/js/jquery-dist/dist/jquery.min.js"></script>
@@ -46,10 +46,10 @@
         weekdays: ["Mánadagur", "Týsdagur", "Mikudagur", "Hósdagur", "Fríggjadagur", "Leygardagur", "Sunnudagur"],
         shortMonths: ["Jan", "Feb", "Mar", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Des"],
         months: ["Januar", "Februar", "Mars", "Apríl", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Desember"],
-        downloadJPEG: "Goym JPEG mynd",
-        downloadPDF: "Goym PDF skjal",
-        downloadPNG: "Goym PNG mynd",
-        downloadSVG: "Goym SVG vektor mynd",
+        downloadJPEG: "Goym JPEG-mynd",
+        downloadPDF: "Goym PDF-skjal",
+        downloadPNG: "Goym PNG-mynd",
+        downloadSVG: "Goym SVG-vektor mynd",
         loading: "lesi inn...",
         printChart: "Prenta",
         rangeSelectorFrom: "Frá",
@@ -77,11 +77,6 @@
             var chart1Timeout3;
 
             function startAnimatingChart1() {
-                clearTimeout(chart1Timeout0);
-                clearTimeout(chart1Timeout1);
-                clearTimeout(chart1Timeout2);
-                clearTimeout(chart1Timeout3);
-
                 drawChart1();
 
                 chart1Timeout0 = setTimeout(function() {
@@ -171,36 +166,7 @@
                 chart1_last_month = chart1_last_month[0];
 
                 //Build Series
-                var createdSeries = [{
-                    name: "Útflutningur",
-                    data: utflutningurdata,
-                    color: "#7fb800",
-                    borderWidth: 0,
-                    tooltip: {
-                        valueDecimals: 0
-                    }
-                }, {
-                    name: "Innflutningur",
-                    data: innflutningurdata,
-                    color: "#00a6ed",
-                    borderWidth: 0,
-
-                    tooltip: {
-                        valueDecimals: 0
-                    }
-                }, {
-                    name: "Handilsjavni",
-                    type: "spline",
-                    data: nettoflytingdata,
-                    color: "#fff",
-                    borderWidth: 0,
-                    tooltip: {
-                        valueDecimals: 0
-                    },
-                    marker: {
-                        enabled: false
-                    }
-                }];
+                var createdSeries = 0;
                 chart1CreatedSeries = createdSeries;
 
 
@@ -229,7 +195,8 @@
                     chart: {
                         type: "column",
                         backgroundColor: "rgba(255, 255, 255, 0)",
-                        borderWidth: 0,
+                        borderWidth: 1,
+                        plotBorderWidth: 1,                      
                         renderTo: "container",
                         events: {
                             load: function () {
@@ -238,27 +205,37 @@
 
                         }
                     },
+                    credits: {
+                        enabled: true,
+                        href: "http://www.hagstova.fo",
+                        text: "Hagstova Føroya"
+                    },                     
                     rangeSelector: {
                         enabled: false
                     },
 
                     exporting: {
-                        enabled: false
+                        enabled: true
                     },
 
                     navigator: {
-                        enabled: false
+                        enabled: true
                     },
                     title: {
-                        text: ""
+                        text: "Handilsjavni",
+                        y: 30
                     },
+                    subtitle: {
+                        text: 'í mió. kr.',
+                        y: 45,                        
+                    },                    
                     legend: {
+                        y: 60,                        
                         layout: "horizontal",
                         align: "center",
                         verticalAlign: "top",
-
                         itemStyle: {
-                            color: "#fff",
+                            color: "#000",
                             fontWeight: "normal"
                         }
                     },
@@ -271,7 +248,7 @@
                         max: chart1_last_month,
                         labels: {
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 fontSize: "11px"
                             }
                         },
@@ -281,25 +258,25 @@
                         title: {
                             text: "",
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 fontWeight: "normal",
                                 fontSize: "12px"
                             }
                         },
-                        lineColor: "#fff",
-                        tickColor: "#fff",
+                        lineColor: "#000",
+                        tickColor: "#000",
                         labels: {
                             formatter: function () {
                                 return Highcharts.numberFormat(Math.abs(this.value),0);
                             },
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 font: "11px"
                             }
                         },
                     },
                     tooltip: {
-                        enabled: false
+                        enabled: true
                     },
                     plotOptions: {
                         series: {
@@ -315,7 +292,36 @@
                         
 
                     },
-                    series: []
+                    series: [{
+                    name: "Útflutningur",
+                    data: utflutningurdata,
+                    color: "#7fb800",
+                    borderWidth: 0,
+                    tooltip: {
+                        valueDecimals: 0
+                    }
+                }, {
+                    name: "Innflutningur",
+                    data: innflutningurdata,
+                    color: "#00a6ed",
+                    borderWidth: 0,
+
+                    tooltip: {
+                        valueDecimals: 0
+                    }
+                }, {
+                    name: "Handilsjavni",
+                    type: "spline",
+                    data: nettoflytingdata,
+                    color: "#000",
+                    borderWidth: 0,
+                    tooltip: {
+                        valueDecimals: 0
+                    },
+                    marker: {
+                        enabled: false
+                    }
+                }]
                 });
             }
 
@@ -414,7 +420,7 @@
                 },function(data) {
                     chart1bData = data;
                     drawChart1();
-                    startAnimatingChart1();
+                    
                 } );
             }
 
@@ -461,9 +467,9 @@
 
                 for (var i = 0; i < fLen; i++) {
                     var innflutningur = ds.Data({ "BEC-groups": "0", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
-                    var skipflogfor = ds.Data({ "BEC-groups": "49", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+                    var skipflogfor = ds.Data({ "BEC-groups": "49", "year": ds.Dimension("year").id[i] }, false).map(function(n) { return n !== "-" | null | n }).filter(function(n) { return n; });
 
-
+                    console.log(skipflogfor);
 
 
                     for (var j = 0; j < innflutningur.length; j++) {
@@ -471,6 +477,11 @@
                         if(month.length == 1) {
                             month = "0" + month;
                         }
+
+
+
+
+
                         innflutningurdata.push([Date.parse(year[i] + "-" + month), (innflutningur[j] - skipflogfor[j])*0.001]);
                     }
                 }
@@ -483,15 +494,7 @@
                 chart8_last_month = chart8_last_month[0];
 
                 //Build Series
-                var createdSeries = [{
-                    name: "Innflutningur",
-                    data: innflutningurdata,
-                    color: "#fff",
-                    tooltip: {
-                        valueDecimals: 1
-                    }
-                }
-                ];
+                var createdSeries = 0;
 
                 //Build Title
                 var title = ds.label;
@@ -518,35 +521,45 @@
                     chart: {
                         type:"line",
                         backgroundColor: "rgba(255, 255, 255, 0)",
-                        borderWidth: 0,
+                        borderWidth: 1,
                         renderTo: "container",
                         events: {
                             load: function () {
                                 chart8 = this;
                             }
                         }
-                    }
-                    ,
+                    },
+                    credits: {
+                        enabled: true,
+                        href: "http://www.hagstova.fo",
+                        text: "Hagstova Føroya"
+                    },                     
                     rangeSelector: {
                         enabled: false
                     },
 
                     exporting: {
-                        enabled: false
+                        enabled: true
                     },
                     navigator: {
-                        enabled: false
+                        enabled: true
                     },
                     title: {
-                        text: ""
+                        text: "Innflutningur",
+                        y: 30
                     },
+                    subtitle: {
+                        text: 'Uttan skip og flogfør. Í mió. kr.',
+                        y: 45,                        
+                    },                    
                     legend: {
+                        y: 60,  
                         layout: "horizontal",
                         align: "center",
                         verticalAlign: "top",
 
                         itemStyle: {
-                            color: "#fff",
+                            color: "#000",
                             fontWeight: "normal"
                         }
                     },
@@ -556,13 +569,13 @@
                         },
                         tickInterval: 2629746000,
                         type: "datetime",
-                        lineColor: "#fff",
-                        tickColor: "#fff",
+                        lineColor: "#000",
+                        tickColor: "#000",
                         min: chart8_last_month - 65743595833,
                         max: chart8_last_month,
                         labels: {
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 fontSize: "11px"
                             }
                         }
@@ -572,25 +585,25 @@
                         title: {
                             text: "",
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 fontWeight: "normal",
                                 fontSize: "12px"
                             }
                         },
-                        lineColor: "#fff",
-                        tickColor: "#fff",
+                        lineColor: "#000",
+                        tickColor: "#000",
                         labels: {
                             formatter: function () {
                                 return Highcharts.numberFormat(this.value,0) + "";
                             },
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 fontSize: "11px"
                             }
                         },
                     },
                     tooltip: {
-                        enabled: false
+                        enabled: true
                     },
                     legend: {
                         enabled: false
@@ -600,26 +613,20 @@
                             marker: {
                                 enabled: false
                             },
-                            dataLabels: {
-                                enabled: true,
-                                color: "#FFF",
-                                useHTML: true,
-                                crop: false,
-                                overflow: false,
-                                formatter: function() {
-                                  var last  = this.series.data[this.series.data.length - 1];
-                                  if (this.point.category === last.category && this.point.y === last.y) {
-                                    return ('<div class="MyDataLabelTooltip"><span class="datetext">' + Highcharts.dateFormat("%b &apos;%y",this.point.x) + "</span><br />" + Highcharts.numberFormat(this.point.y,0) + " mió" + "</div>");
-                                  }
-                                  else {return};
-                                }
-                            }
                         },
                         series: {
                             showInNavigator: true
                         }
                     },
-                    series: createdSeries
+                    series: [{
+                    name: "Innflutningur",
+                    data: innflutningurdata,
+                    color: "#000",
+                    tooltip: {
+                        valueDecimals: 1
+                    }
+                }
+                ]
                 });
             }
 
@@ -738,23 +745,7 @@
                 chart9_last_month = chart9_last_month[0];
 
                 //Build Series
-                var createdSeries = [{
-                    name: "Tilfar til vinnu",
-                    data: tilfarvinnadata,
-                    color: "#00a6ed",
-                    tooltip: {
-                        valueDecimals: 1
-                    },
-                },
-                {
-                    name: "Húsarhald",
-                    data: husarhalddata,
-                    color: "#fb6107",
-                    tooltip: {
-                        valueDecimals: 1
-                    }
-                }                
-                ];
+                var createdSeries = 0;
 
                 //Build Title
                 var title = ds.label;
@@ -781,34 +772,44 @@
                     chart: {
                         type:"line",
                         backgroundColor: "rgba(255, 255, 255, 0)",
-                        borderWidth: 0,
+                        borderWidth: 1,
                         renderTo: "container",
                         events: {
                             load: function () {
                                 chart9 = this;
                             }
                         }
-                    }
-                    ,
+                    },
+                    credits: {
+                        enabled: true,
+                        href: "http://www.hagstova.fo",
+                        text: "Hagstova Føroya"
+                    },                     
                     rangeSelector: {
                         enabled: false
                     },
 
                     exporting: {
-                        enabled: false
+                        enabled: true
                     },
                     navigator: {
-                        enabled: false
+                        enabled: true
                     },
                     title: {
-                        text: ""
+                        text: "Innflutningur - tilfar til vinnu og húsarhald",
+                        y: 30
                     },
+                    subtitle: {
+                        text: 'í mió. kr.',
+                        y: 45,                        
+                    },                    
                     legend: {
+                        y: 60,  
                         layout: "horizontal",
                         align: "center",
                         verticalAlign: "top",
                         itemStyle: {
-                            color: "#fff",
+                            color: "#000",
                             fontWeight: "normal"
                         }
                     },
@@ -818,13 +819,13 @@
                         },
                         tickInterval: 2629746000,
                         type: "datetime",
-                        lineColor: "#fff",
-                        tickColor: "#fff",
+                        lineColor: "#000",
+                        tickColor: "#000",
                         min: chart9_last_month - 65743595833,
                         max: chart9_last_month,
                         labels: {
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 fontSize: "11px"
                             }
                         }
@@ -834,25 +835,25 @@
                         title: {
                             text: "",
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 fontWeight: "normal",
                                 fontSize: "12px"
                             }
                         },
-                        lineColor: "#fff",
-                        tickColor: "#fff",
+                        lineColor: "#000",
+                        tickColor: "#000",
                         labels: {
                             formatter: function () {
                                 return Highcharts.numberFormat(this.value,0) + "";
                             },
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 fontSize: "11px"
                             }
                         },
                     },
                     tooltip: {
-                        enabled: false
+                        enabled: true
                     },
                     plotOptions: {
                         line: {
@@ -872,7 +873,23 @@
                         },
 
                     },
-                    series: createdSeries
+                    series: [{
+                    name: "Tilfar til vinnu",
+                    data: tilfarvinnadata,
+                    color: "#00a6ed",
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                },
+                {
+                    name: "Húsarhald",
+                    data: husarhalddata,
+                    color: "#fb6107",
+                    tooltip: {
+                        valueDecimals: 1
+                    }
+                }                
+                ]
                 });
             }
 
@@ -986,7 +1003,7 @@
                 var createdSeries = [{
                     name: "Útflutningur",
                     data: utflutningurdata,
-                    color: "#fff",
+                    color: "#000",
                     tooltip: {
                         valueDecimals: 1
                     }
@@ -1018,35 +1035,45 @@
                     chart: {
                         type:"line",
                         backgroundColor: "rgba(255, 255, 255, 0)",
-                        borderWidth: 0,
+                        borderWidth: 1,
                         renderTo: "container",
                         events: {
                             load: function () {
                                 chart2 = this;
                             }
                         }
-                    }
-                    ,
+                    },
+                    credits: {
+                        enabled: true,
+                        href: "http://www.hagstova.fo",
+                        text: "Hagstova Føroya"
+                    },                    
                     rangeSelector: {
                         enabled: false
                     },
 
                     exporting: {
-                        enabled: false
+                        enabled: true
                     },
                     navigator: {
-                        enabled: false
+                        enabled: true
                     },
                     title: {
-                        text: ""
+                        text: "Útflutningur av fiskavørum",
+                        y: 30
                     },
+                    subtitle: {
+                        text: 'í mió. kr.',
+                        y: 45,                        
+                    },                    
                     legend: {
+                        y: 60,  
                         layout: "horizontal",
                         align: "center",
                         verticalAlign: "top",
 
                         itemStyle: {
-                            color: "#fff",
+                            color: "#000",
                             fontWeight: "normal"
                         }
                     },
@@ -1056,13 +1083,13 @@
                         },
                         tickInterval: 2629746000,
                         type: "datetime",
-                        lineColor: "#fff",
-                        tickColor: "#fff",
+                        lineColor: "#000",
+                        tickColor: "#000",
                         min: chart2_last_month - 65743595833,
                         max: chart2_last_month,
                         labels: {
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 fontSize: "11px"
                             }
                         }
@@ -1072,25 +1099,25 @@
                         title: {
                             text: "",
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 fontWeight: "normal",
                                 fontSize: "12px"
                             }
                         },
-                        lineColor: "#fff",
-                        tickColor: "#fff",
+                        lineColor: "#000",
+                        tickColor: "#000",
                         labels: {
                             formatter: function () {
                                 return Highcharts.numberFormat(this.value,0) + "";
                             },
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 fontSize: "11px"
                             }
                         },
                     },
                     tooltip: {
-                        enabled: false
+                        enabled: true
                     },
                     legend: {
                         enabled: false
@@ -1099,20 +1126,6 @@
                         line: {
                             marker: {
                                 enabled: false
-                            },
-                            dataLabels: {
-                                enabled: true,
-                                color: "#FFF",
-                                useHTML: true,
-                                crop: false,
-                                overflow: false,
-                                formatter: function() {
-                                  var last  = this.series.data[this.series.data.length - 1];
-                                  if (this.point.category === last.category && this.point.y === last.y) {
-                                    return ('<div class="MyDataLabelTooltip"><span class="datetext">' + Highcharts.dateFormat("%b &apos;%y",this.point.x) + "</span><br />" + Highcharts.numberFormat(this.point.y,0) + " mió" + "</div>");
-                                  }
-                                  else {return};
-                                }
                             }
                         },
                         series: {
@@ -1171,240 +1184,6 @@
 
 
 
-
-
-//---------------------------------------------------------
-//                       CHART 4
-//---------------------------------------------------------
-            var chart4;
-            var chart4Data;
-            var chart4_last_month;
-            var chart4Timeout0;
-
-            function startAnimatingChart4() {
-                clearTimeout(chart4Timeout0);
-
-                drawChart4();
-
-                chart4Timeout0 = setTimeout(function () {
-                    chart4.update({xAxis: {
-                        min: null,
-                        max: null
-                    }});
-                }, 25000);
-            }
-
-            //Chart 4 specific functions
-            function drawChart4() {
-                var jsonStatData = chart4Data;
-
-                //Extrat Data From JSON Stat
-                ds = JSONstat(jsonStatData).Dataset(0);
-                t = ds.Dimension("year").length - 1;
-                year = ds.Dimension("year").id;
-
-                var fLen = year.length;
-                m = ds.Dimension("month").id;
-
-                //Format Data
-                var unemploymentdata = [];
-
-                for (var i = 0; i < fLen; i++) {
-                    var unemployment = ds.Data({ "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
-
-                    for (var j = 0; j < unemployment.length; j++) {
-                        var month = m[j];
-                        if(month.length == 1) {
-                            month = "0" + month;
-                        }
-                        unemploymentdata.push([Date.parse(year[i] + "-" + month), unemployment[j]]);
-                    }
-                }
-
-                var chart4_last_month = unemploymentdata[unemploymentdata.length - 1];
-                chart4_last_month = chart4_last_month[0];
-
-                //Build Series
-                var createdSeries = [{
-                    name: "Arbeiðsloysi",
-                    data: unemploymentdata,
-                    color: "#fff",
-                    tooltip: {
-                        valueDecimals: 1
-                    }
-                }
-                ];
-
-                //Build Title
-                var title = ds.label;
-
-                //Build subtitle
-                var subtitle = ds.source;
-
-                //Build Tooltip
-                var tooltipFunction = function () {
-                    var s = "<b>" + Highcharts.dateFormat("%Y-%b", this.x) + "</b>";
-                    $.each(this.points,
-                        function (i, point) {
-                            s += "<br/>" + point.series.name + ": " + Highcharts.numberFormat(point.y, 0.0, ",", ".");
-                        });
-
-                    return s;
-                }
-
-                //Build Chart
-                $("#chart4").highcharts({
-                    credits: {
-                        enabled: false
-                    },
-                    chart: {
-                        type:"line",
-                        backgroundColor: "rgba(255, 255, 255, 0)",
-                        borderWidth: 0,
-                        renderTo: "container",
-                        events: {
-                            load: function () {
-                                chart4 = this;
-                            }
-                        }
-                    },
-                    rangeSelector: {
-                        enabled: false
-                    },
-
-                    exporting: {
-                        enabled: false
-                    },
-                    navigator: {
-                        enabled: false
-                    },
-                    title: {
-                        text: ""
-                    },
-                    legend: {
-                        layout: "horizontal",
-                        align: "center",
-                        verticalAlign: "top",
-                        itemStyle: {
-                            color: "#fff",
-                            fontWeight: "normal"
-                        }
-                    },
-                    xAxis: {
-                        title: {
-                            enabled: false
-                        },
-                        tickInterval: 2629746000,
-                        type: "datetime",
-                        lineColor: "#fff",
-                        tickColor: "#fff",
-                        min: chart4_last_month - 65743595833,
-                        max: chart4_last_month,
-                        labels: {
-                            style: {
-                                color: "#fff",
-                                fontSize: "11px"
-                            }
-                        }
-                    },
-                    yAxis: {
-                        title: {
-                            text: "",
-                            style: {
-                                color: "#fff",
-                                fontWeight: "normal",
-                                fontSize: "12px"
-                            }
-                        },
-                        lineColor: "#fff",
-                        tickColor: "#fff",
-                        tickInterval: 0.5,
-                        labels: {
-                            formatter: function () {
-                                return Highcharts.numberFormat(this.value, 1) + " %";
-                            },
-                            style: {
-                                color: "#fff",
-                                fontSize: "11px"
-                            }
-                        },
-                    },
-                    tooltip: {
-                        enabled: false
-                    },
-                    legend: {
-                        enabled: false
-                    },
-                    plotOptions: {
-                        line: {
-                            marker: {
-                                enabled: false
-                            },
-                            dataLabels: {
-                                enabled: true,
-                                color: "#FFF",
-                                useHTML: true,
-                                crop: false,
-                                overflow: false,
-                                formatter: function() {
-                                  var last  = this.series.data[this.series.data.length - 1];
-                                  if (this.point.category === last.category  && this.point.y === last.y) {
-                                    return ('<div class="MyDataLabelTooltip"><span class="datetext">' +  Highcharts.dateFormat("%b &apos;%y",this.point.x) + "</span><br />" +  Highcharts.numberFormat(this.point.y,1) + "%" + "</div>");
-                                  }
-                                  else {return};
-                                }
-                            }
-                        },
-                        series: {
-                            showInNavigator: true
-                        }
-                    },
-                    series: createdSeries
-                });
-            }
-
-            function loadDataAndBuildChart4() {
-                POST("https://statbank.hagstova.fo/api/v1/fo/H2/AM/AM02/al_pctkyn.px", {
-                    "query": [
-                        {
-                            "code": "measure",
-                            "selection": {
-                                "filter": "item",
-                                "values": [
-                                    "ALPCTJ"
-                                ]
-                            }
-                        },
-                        {
-                            "code": "month",
-                            "selection": {
-                                "filter": "item",
-                                "values": [
-                                    "1",
-                                    "2",
-                                    "3",
-                                    "4",
-                                    "5",
-                                    "6",
-                                    "7",
-                                    "8",
-                                    "9",
-                                    "10",
-                                    "11",
-                                    "12"
-                                ]
-                            }
-                        }
-                    ],
-                    "response": {
-                        "format": "json-stat"
-                    }
-                }, function(data) {
-                    chart4Data = data;
-                    drawChart4();
-                    startAnimatingChart4();
-                });
-            }
 
 
 
@@ -1506,7 +1285,137 @@
                 chart3_last_month = chart3_last_month[0];
 
                 //Build Series
-                var createdSeries = [
+                var createdSeries = 0;
+                chart3CreatedSeries = createdSeries;
+
+
+                //Build Title
+                var title = ds.label;
+
+                //Build subtitle
+                var subtitle = ds.source;
+
+                //Build Tooltip
+                var tooltipFunction = function () {
+                    var s = "<b>" + Highcharts.dateFormat("%Y-%b", this.x) + "</b>";
+                    $.each(this.points,
+                        function (i, point) {
+                            s += "<br/>" + point.series.name + ": " + Highcharts.numberFormat(point.y, 0.0, ",", ".");
+                        });
+
+                    return s;
+                }
+
+                //Build Chart
+                $("#chart3").highcharts({
+                    credits: {
+                        enabled: false
+                    },
+                    chart: {
+
+                        backgroundColor: "rgba(255, 255, 255, 0)",
+                        borderWidth: 1,
+                        renderTo: "container",
+                        events: {
+                            load: function () {
+                                chart3 = this;
+                            }
+
+                        }
+                    },
+                    rangeSelector: {
+                        enabled: false
+                    },
+                    credits: {
+                        enabled: true,
+                        href: "http://www.hagstova.fo",
+                        text: "Hagstova Føroya"
+                    }, 
+                    exporting: {
+                        enabled: true
+                    },
+
+                    navigator: {
+                        enabled: true
+                    },
+                    title: {
+                        text: "Útflutningur av fiskavørum",
+                        y: 30
+                    },
+                    subtitle: {
+                        text: 'í mió. kr.',
+                        y: 45,                        
+                    },                    
+                    legend: {
+                        y: 60,  
+                        align: "center",
+                        verticalAlign: "top",
+
+                        itemStyle: {
+                            color: "#000",
+                            fontWeight: "normal"
+                        }
+                    },
+                    xAxis: {
+                        title: {
+                            enabled: false
+                        },
+                        type: "datetime",
+                        min: chart3_last_month - 65743595833,
+                        max: chart3_last_month,
+                        labels: {
+                            style: {
+                                color: "#000",
+                                fontSize: "11px"
+                            }
+                        },
+                        showLastLabel: true,
+
+                    },
+                    yAxis: {
+                        title: {
+                            text: "",
+                            style: {
+                                color: "#000",
+                                fontWeight: "normal",
+                                fontSize: "12px"
+                            }
+                        },
+                        min: 0,
+                        lineColor: "#000",
+                        tickColor: "#000",
+                        labels: {
+                            formatter: function () {
+                                return Highcharts.numberFormat(this.value, 0);
+                            },
+                            style: {
+                                color: "#000",
+                                font: "11px"
+                            }
+                        },
+                    },
+                    tooltip: {
+                        enabled: true
+                    },
+                    plotOptions: {
+                    	line: {
+                    		marker: {
+                    			enabled: false
+                    		},
+                            lineWidth: 4
+
+                    	},
+
+                        series: {
+                            dataGrouping:{
+                                enabled: true,
+                                units:[ ["year", [null]]],
+                                groupPixelWidth: 10
+                            },
+                        },
+
+                    },
+                    series: [
                 {
                     name: "Toskur, hýsa, upsi",
                     data: toskurhysaupsidata,
@@ -1540,135 +1449,14 @@
                 {
                     name: "Onnur fiskasløg",
                     data: onnurfiskaslogdata,
-                    color: "#ecf0f1",
+                    color: "#00a6ed",
                     tooltip: {
                         valueDecimals: 1
                     },
                     legendIndex:4,
                     index: 0
                 }
-                ];
-                chart3CreatedSeries = createdSeries;
-
-
-                //Build Title
-                var title = ds.label;
-
-                //Build subtitle
-                var subtitle = ds.source;
-
-                //Build Tooltip
-                var tooltipFunction = function () {
-                    var s = "<b>" + Highcharts.dateFormat("%Y-%b", this.x) + "</b>";
-                    $.each(this.points,
-                        function (i, point) {
-                            s += "<br/>" + point.series.name + ": " + Highcharts.numberFormat(point.y, 0.0, ",", ".");
-                        });
-
-                    return s;
-                }
-
-                //Build Chart
-                $("#chart3").highcharts({
-                    credits: {
-                        enabled: false
-                    },
-                    chart: {
-
-                        backgroundColor: "rgba(255, 255, 255, 0)",
-                        borderWidth: 0,
-                        renderTo: "container",
-                        events: {
-                            load: function () {
-                                chart3 = this;
-                            }
-
-                        }
-                    },
-                    rangeSelector: {
-                        enabled: false
-                    },
-
-                    exporting: {
-                        enabled: false
-                    },
-
-                    navigator: {
-                        enabled: false
-                    },
-                    title: {
-                        text: ""
-                    },
-                    legend: {
-                        layout: "horizontal",
-                        align: "center",
-                        verticalAlign: "top",
-
-                        itemStyle: {
-                            color: "#fff",
-                            fontWeight: "normal"
-                        }
-                    },
-                    xAxis: {
-                        title: {
-                            enabled: false
-                        },
-                        type: "datetime",
-                        min: chart3_last_month - 65743595833,
-                        max: chart3_last_month,
-                        labels: {
-                            style: {
-                                color: "#fff",
-                                fontSize: "11px"
-                            }
-                        },
-                        showLastLabel: true,
-
-                    },
-                    yAxis: {
-                        title: {
-                            text: "",
-                            style: {
-                                color: "#fff",
-                                fontWeight: "normal",
-                                fontSize: "12px"
-                            }
-                        },
-                        min: 0,
-                        lineColor: "#fff",
-                        tickColor: "#fff",
-                        labels: {
-                            formatter: function () {
-                                return Highcharts.numberFormat(this.value, 0);
-                            },
-                            style: {
-                                color: "#fff",
-                                font: "11px"
-                            }
-                        },
-                    },
-                    tooltip: {
-                        enabled: false
-                    },
-                    plotOptions: {
-                    	line: {
-                    		marker: {
-                    			enabled: false
-                    		},
-                            lineWidth: 4
-
-                    	},
-
-                        series: {
-                            dataGrouping:{
-                                enabled: true,
-                                units:[ ["year", [null]]],
-                                groupPixelWidth: 10
-                            },
-                        },
-
-                    },
-                    series: []
+                ]
                 });
             }
 
@@ -1846,36 +1634,7 @@
 
 
                 //Build Series
-                var createdSeries = [{
-                    name: "Útflutningur",
-                    data: utflutningurdata,
-                    color: "#7fb800",
-                    borderWidth: 0,
-                    tooltip: {
-                        valueDecimals: 0
-                    }
-                }, {
-                    name: "Innflutningur",
-                    data: innflutningurdata,
-                    color: "#00a6ed",
-                    borderWidth: 0,
-
-                    tooltip: {
-                        valueDecimals: 0
-                    }
-                }, {
-                    name: "Handilsjavni",
-                    type: "spline",
-                    data: nettoflytingdata,
-                    color: "#fff",
-                    borderWidth: 0,
-                    tooltip: {
-                        valueDecimals: 0
-                    },
-                    marker: {
-                        enabled: false
-                    }
-                }];
+                var createdSeries = 0;
                 chart5CreatedSeries = createdSeries;
 
 
@@ -1904,7 +1663,7 @@
                     chart: {
                         type: "column",
                         backgroundColor: "rgba(255, 255, 255, 0)",
-                        borderWidth: 0,
+                        borderWidth: 1,
                         renderTo: "container",
                         events: {
                             load: function () {
@@ -1913,27 +1672,38 @@
 
                         }
                     },
+                    credits: {
+                        enabled: true,
+                        href: "http://www.hagstova.fo",
+                        text: "Hagstova Føroya"
+                    },                     
                     rangeSelector: {
                         enabled: false
                     },
 
                     exporting: {
-                        enabled: false
+                        enabled: true
                     },
 
                     navigator: {
-                        enabled: false
+                        enabled: true
                     },
                     title: {
-                        text: ""
+                        text: "Samhandil við Russland",
+                        y: 30
                     },
+                    subtitle: {
+                        text: 'í mió. kr.',
+                        y: 45,                        
+                    },                    
                     legend: {
+                        y: 60,
                         layout: "horizontal",
                         align: "center",
                         verticalAlign: "top",
 
                         itemStyle: {
-                            color: "#fff",
+                            color: "#000",
                             fontWeight: "normal"
                         }
                     },
@@ -1944,7 +1714,7 @@
                         type: "datetime",
                         labels: {
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 fontSize: "11px"
                             }
                         },
@@ -1954,25 +1724,25 @@
                         title: {
                             text: "",
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 fontWeight: "normal",
                                 fontSize: "12px"
                             }
                         },
-                        lineColor: "#fff",
-                        tickColor: "#fff",
+                        lineColor: "#000",
+                        tickColor: "#000",
                         labels: {
                             formatter: function () {
                                 return Highcharts.numberFormat(Math.abs(this.value),0);
                             },
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 font: "11px"
                             }
                         },
                     },
                     tooltip: {
-                        enabled: false
+                        enabled: true
                     },
                     plotOptions: {
                         series: {
@@ -1988,7 +1758,36 @@
                         
 
                     },
-                    series: []
+                    series: [{
+                    name: "Útflutningur",
+                    data: utflutningurdata,
+                    color: "#7fb800",
+                    borderWidth: 0,
+                    tooltip: {
+                        valueDecimals: 0
+                    }
+                }, {
+                    name: "Innflutningur",
+                    data: innflutningurdata,
+                    color: "#00a6ed",
+                    borderWidth: 0,
+
+                    tooltip: {
+                        valueDecimals: 0
+                    }
+                }, {
+                    name: "Handilsjavni",
+                    type: "spline",
+                    data: nettoflytingdata,
+                    color: "#000",
+                    borderWidth: 0,
+                    tooltip: {
+                        valueDecimals: 0
+                    },
+                    marker: {
+                        enabled: false
+                    }
+                }]
                 });
             }
 
@@ -2165,36 +1964,7 @@
 
 
                 //Build Series
-                var createdSeries = [{
-                    name: "Útflutningur",
-                    data: utflutningurdata,
-                    color: "#7fb800",
-                    borderWidth: 0,
-                    tooltip: {
-                        valueDecimals: 0
-                    }
-                }, {
-                    name: "Innflutningur",
-                    data: innflutningurdata,
-                    color: "#00a6ed",
-                    borderWidth: 0,
-
-                    tooltip: {
-                        valueDecimals: 0
-                    }
-                }, {
-                    name: "Handilsjavni",
-                    type: "spline",
-                    data: nettoflytingdata,
-                    color: "#fff",
-                    borderWidth: 0,
-                    tooltip: {
-                        valueDecimals: 0
-                    },
-                    marker: {
-                        enabled: false
-                    }
-                }];
+                var createdSeries = 0;
                 chart6CreatedSeries = createdSeries;
 
 
@@ -2223,7 +1993,7 @@
                     chart: {
                         type: "column",
                         backgroundColor: "rgba(255, 255, 255, 0)",
-                        borderWidth: 0,
+                        borderWidth: 1,
                         renderTo: "container",
                         events: {
                             load: function () {
@@ -2232,27 +2002,38 @@
 
                         }
                     },
+                    credits: {
+                        enabled: true,
+                        href: "http://www.hagstova.fo",
+                        text: "Hagstova Føroya"
+                    },                     
                     rangeSelector: {
                         enabled: false
                     },
 
                     exporting: {
-                        enabled: false
+                        enabled: true
                     },
 
                     navigator: {
-                        enabled: false
+                        enabled: true
                     },
                     title: {
-                        text: ""
+                        text: "Samhandil við USA",
+                        y: 30
                     },
+                    subtitle: {
+                        text: 'í mió. kr.',
+                        y: 45,                        
+                    },                    
                     legend: {
+                        y: 60,
                         layout: "horizontal",
                         align: "center",
                         verticalAlign: "top",
 
                         itemStyle: {
-                            color: "#fff",
+                            color: "#000",
                             fontWeight: "normal"
                         }
                     },
@@ -2263,7 +2044,7 @@
                         type: "datetime",
                         labels: {
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 fontSize: "11px"
                             }
                         },
@@ -2273,25 +2054,25 @@
                         title: {
                             text: "",
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 fontWeight: "normal",
                                 fontSize: "12px"
                             }
                         },
-                        lineColor: "#fff",
-                        tickColor: "#fff",
+                        lineColor: "#000",
+                        tickColor: "#000",
                         labels: {
                             formatter: function () {
                                 return Highcharts.numberFormat(Math.abs(this.value),0);
                             },
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 font: "11px"
                             }
                         },
                     },
                     tooltip: {
-                        enabled: false
+                        enabled: true
                     },
                     plotOptions: {
                         series: {
@@ -2307,7 +2088,36 @@
                         
 
                     },
-                    series: []
+                    series: [{
+                    name: "Útflutningur",
+                    data: utflutningurdata,
+                    color: "#7fb800",
+                    borderWidth: 0,
+                    tooltip: {
+                        valueDecimals: 0
+                    }
+                }, {
+                    name: "Innflutningur",
+                    data: innflutningurdata,
+                    color: "#00a6ed",
+                    borderWidth: 0,
+
+                    tooltip: {
+                        valueDecimals: 0
+                    }
+                }, {
+                    name: "Handilsjavni",
+                    type: "spline",
+                    data: nettoflytingdata,
+                    color: "#000",
+                    borderWidth: 0,
+                    tooltip: {
+                        valueDecimals: 0
+                    },
+                    marker: {
+                        enabled: false
+                    }
+                }]
                 });
             }
 
@@ -2487,36 +2297,7 @@
 
 
                 //Build Series
-                var createdSeries = [{
-                    name: "Útflutningur",
-                    data: utflutningurdata,
-                    color: "#7fb800",
-                    borderWidth: 0,
-                    tooltip: {
-                        valueDecimals: 0
-                    }
-                }, {
-                    name: "Innflutningur",
-                    data: innflutningurdata,
-                    color: "#00a6ed",
-                    borderWidth: 0,
-
-                    tooltip: {
-                        valueDecimals: 0
-                    }
-                }, {
-                    name: "Handilsjavni",
-                    type: "spline",
-                    data: nettoflytingdata,
-                    color: "#fff",
-                    borderWidth: 0,
-                    tooltip: {
-                        valueDecimals: 0
-                    },
-                    marker: {
-                        enabled: false
-                    }
-                }];
+                var createdSeries = 0;
                 chart7CreatedSeries = createdSeries;
 
 
@@ -2545,7 +2326,7 @@
                     chart: {
                         type: "column",
                         backgroundColor: "rgba(255, 255, 255, 0)",
-                        borderWidth: 0,
+                        borderWidth: 1,
                         renderTo: "container",
                         events: {
                             load: function () {
@@ -2554,27 +2335,38 @@
 
                         }
                     },
+                    credits: {
+                        enabled: true,
+                        href: "http://www.hagstova.fo",
+                        text: "Hagstova Føroya"
+                    },                     
                     rangeSelector: {
                         enabled: false
                     },
 
                     exporting: {
-                        enabled: false
+                        enabled: true
                     },
 
                     navigator: {
-                        enabled: false
+                        enabled: true
                     },
                     title: {
-                        text: ""
+                        text: "Samhandil við Stóra Bretland",
+                        y: 30
                     },
+                    subtitle: {
+                        text: 'í mió. kr.',
+                        y: 45,                        
+                    },                    
                     legend: {
+                        y: 60,
                         layout: "horizontal",
                         align: "center",
                         verticalAlign: "top",
 
                         itemStyle: {
-                            color: "#fff",
+                            color: "#000",
                             fontWeight: "normal"
                         }
                     },
@@ -2585,7 +2377,7 @@
                         type: "datetime",
                         labels: {
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 fontSize: "11px"
                             }
                         },
@@ -2595,25 +2387,25 @@
                         title: {
                             text: "",
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 fontWeight: "normal",
                                 fontSize: "12px"
                             }
                         },
-                        lineColor: "#fff",
-                        tickColor: "#fff",
+                        lineColor: "#000",
+                        tickColor: "#000",
                         labels: {
                             formatter: function () {
                                 return Highcharts.numberFormat(Math.abs(this.value),0);
                             },
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 font: "11px"
                             }
                         },
                     },
                     tooltip: {
-                        enabled: false
+                        enabled: true
                     },
                     plotOptions: {
                         series: {
@@ -2629,7 +2421,36 @@
                         
 
                     },
-                    series: []
+                    series: [{
+                    name: "Útflutningur",
+                    data: utflutningurdata,
+                    color: "#7fb800",
+                    borderWidth: 0,
+                    tooltip: {
+                        valueDecimals: 0
+                    }
+                }, {
+                    name: "Innflutningur",
+                    data: innflutningurdata,
+                    color: "#00a6ed",
+                    borderWidth: 0,
+
+                    tooltip: {
+                        valueDecimals: 0
+                    }
+                }, {
+                    name: "Handilsjavni",
+                    type: "spline",
+                    data: nettoflytingdata,
+                    color: "#000",
+                    borderWidth: 0,
+                    tooltip: {
+                        valueDecimals: 0
+                    },
+                    marker: {
+                        enabled: false
+                    }
+                }]
                 });
             }
 
@@ -2807,36 +2628,7 @@
 
 
                 //Build Series
-                var createdSeries = [{
-                    name: "Útflutningur",
-                    data: utflutningurdata,
-                    color: "#7fb800",
-                    borderWidth: 0,
-                    tooltip: {
-                        valueDecimals: 0
-                    }
-                }, {
-                    name: "Innflutningur",
-                    data: innflutningurdata,
-                    color: "#00a6ed",
-                    borderWidth: 0,
-
-                    tooltip: {
-                        valueDecimals: 0
-                    }
-                }, {
-                    name: "Handilsjavni",
-                    type: "spline",
-                    data: nettoflytingdata,
-                    color: "#fff",
-                    borderWidth: 0,
-                    tooltip: {
-                        valueDecimals: 0
-                    },
-                    marker: {
-                        enabled: false
-                    }
-                }];
+                var createdSeries = 0;
                 chart11CreatedSeries = createdSeries;
 
 
@@ -2865,7 +2657,7 @@
                     chart: {
                         type: "column",
                         backgroundColor: "rgba(255, 255, 255, 0)",
-                        borderWidth: 0,
+                        borderWidth: 1,
                         renderTo: "container",
                         events: {
                             load: function () {
@@ -2877,24 +2669,34 @@
                     rangeSelector: {
                         enabled: false
                     },
-
+                    credits: {
+                        enabled: true,
+                        href: "http://www.hagstova.fo",
+                        text: "Hagstova Føroya"
+                    }, 
                     exporting: {
-                        enabled: false
+                        enabled: true
                     },
 
                     navigator: {
-                        enabled: false
+                        enabled: true
                     },
                     title: {
-                        text: ""
+                        text: "Samhandil við Danmark",
+                        y: 30
                     },
+                    subtitle: {
+                        text: 'í mió. kr.',
+                        y: 45,                        
+                    },                    
                     legend: {
+                        y: 60,
                         layout: "horizontal",
                         align: "center",
                         verticalAlign: "top",
 
                         itemStyle: {
-                            color: "#fff",
+                            color: "#000",
                             fontWeight: "normal"
                         }
                     },
@@ -2905,7 +2707,7 @@
                         type: "datetime",
                         labels: {
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 fontSize: "11px"
                             }
                         },
@@ -2915,25 +2717,25 @@
                         title: {
                             text: "",
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 fontWeight: "normal",
                                 fontSize: "12px"
                             }
                         },
-                        lineColor: "#fff",
-                        tickColor: "#fff",
+                        lineColor: "#000",
+                        tickColor: "#000",
                         labels: {
                             formatter: function () {
                                 return Highcharts.numberFormat(Math.abs(this.value),0);
                             },
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 font: "11px"
                             }
                         },
                     },
                     tooltip: {
-                        enabled: false
+                        enabled: true
                     },
                     plotOptions: {
                         series: {
@@ -2949,7 +2751,36 @@
                         
 
                     },
-                    series: []
+                    series: [{
+                    name: "Útflutningur",
+                    data: utflutningurdata,
+                    color: "#7fb800",
+                    borderWidth: 0,
+                    tooltip: {
+                        valueDecimals: 0
+                    }
+                }, {
+                    name: "Innflutningur",
+                    data: innflutningurdata,
+                    color: "#00a6ed",
+                    borderWidth: 0,
+
+                    tooltip: {
+                        valueDecimals: 0
+                    }
+                }, {
+                    name: "Handilsjavni",
+                    type: "spline",
+                    data: nettoflytingdata,
+                    color: "#000",
+                    borderWidth: 0,
+                    tooltip: {
+                        valueDecimals: 0
+                    },
+                    marker: {
+                        enabled: false
+                    }
+                }]
                 });
             }
 
@@ -3128,36 +2959,7 @@
 
 
                 //Build Series
-                var createdSeries = [{
-                    name: "Útflutningur",
-                    data: utflutningurdata,
-                    color: "#7fb800",
-                    borderWidth: 0,
-                    tooltip: {
-                        valueDecimals: 0
-                    }
-                }, {
-                    name: "Innflutningur",
-                    data: innflutningurdata,
-                    color: "#00a6ed",
-                    borderWidth: 0,
-
-                    tooltip: {
-                        valueDecimals: 0
-                    }
-                }, {
-                    name: "Handilsjavni",
-                    type: "spline",
-                    data: nettoflytingdata,
-                    color: "#fff",
-                    borderWidth: 0,
-                    tooltip: {
-                        valueDecimals: 0
-                    },
-                    marker: {
-                        enabled: false
-                    }
-                }];
+                var createdSeries = 0;
                 chart12CreatedSeries = createdSeries;
 
 
@@ -3186,7 +2988,7 @@
                     chart: {
                         type: "column",
                         backgroundColor: "rgba(255, 255, 255, 0)",
-                        borderWidth: 0,
+                        borderWidth: 1,
                         renderTo: "container",
                         events: {
                             load: function () {
@@ -3195,27 +2997,38 @@
 
                         }
                     },
+                    credits: {
+                        enabled: true,
+                        href: "http://www.hagstova.fo",
+                        text: "Hagstova Føroya"
+                    },                     
                     rangeSelector: {
                         enabled: false
                     },
 
                     exporting: {
-                        enabled: false
+                        enabled: true
                     },
 
                     navigator: {
-                        enabled: false
+                        enabled: true
                     },
                     title: {
-                        text: ""
+                        text: "Samhandil við Týskland",
+                        y: 30
                     },
+                    subtitle: {
+                        text: 'í mió. kr.',
+                        y: 45,                        
+                    },                    
                     legend: {
+                        y: 60,
                         layout: "horizontal",
                         align: "center",
                         verticalAlign: "top",
 
                         itemStyle: {
-                            color: "#fff",
+                            color: "#000",
                             fontWeight: "normal"
                         }
                     },
@@ -3226,7 +3039,7 @@
                         type: "datetime",
                         labels: {
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 fontSize: "11px"
                             }
                         },
@@ -3236,25 +3049,25 @@
                         title: {
                             text: "",
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 fontWeight: "normal",
                                 fontSize: "12px"
                             }
                         },
-                        lineColor: "#fff",
-                        tickColor: "#fff",
+                        lineColor: "#000",
+                        tickColor: "#000",
                         labels: {
                             formatter: function () {
                                 return Highcharts.numberFormat(Math.abs(this.value),0);
                             },
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 font: "11px"
                             }
                         },
                     },
                     tooltip: {
-                        enabled: false
+                        enabled: true
                     },
                     plotOptions: {
                         series: {
@@ -3270,7 +3083,36 @@
                         
 
                     },
-                    series: []
+                    series: [{
+                    name: "Útflutningur",
+                    data: utflutningurdata,
+                    color: "#7fb800",
+                    borderWidth: 0,
+                    tooltip: {
+                        valueDecimals: 0
+                    }
+                }, {
+                    name: "Innflutningur",
+                    data: innflutningurdata,
+                    color: "#00a6ed",
+                    borderWidth: 0,
+
+                    tooltip: {
+                        valueDecimals: 0
+                    }
+                }, {
+                    name: "Handilsjavni",
+                    type: "spline",
+                    data: nettoflytingdata,
+                    color: "#000",
+                    borderWidth: 0,
+                    tooltip: {
+                        valueDecimals: 0
+                    },
+                    marker: {
+                        enabled: false
+                    }
+                }]
                 });
             }
 
@@ -3446,36 +3288,7 @@
 
 
                 //Build Series
-                var createdSeries = [{
-                    name: "Útflutningur",
-                    data: utflutningurdata,
-                    color: "#7fb800",
-                    borderWidth: 0,
-                    tooltip: {
-                        valueDecimals: 0
-                    }
-                }, {
-                    name: "Innflutningur",
-                    data: innflutningurdata,
-                    color: "#00a6ed",
-                    borderWidth: 0,
-
-                    tooltip: {
-                        valueDecimals: 0
-                    }
-                }, {
-                    name: "Handilsjavni",
-                    type: "spline",
-                    data: nettoflytingdata,
-                    color: "#fff",
-                    borderWidth: 0,
-                    tooltip: {
-                        valueDecimals: 0
-                    },
-                    marker: {
-                        enabled: false
-                    }
-                }];
+                var createdSeries = 0;
                 chart13CreatedSeries = createdSeries;
 
 
@@ -3504,7 +3317,7 @@
                     chart: {
                         type: "column",
                         backgroundColor: "rgba(255, 255, 255, 0)",
-                        borderWidth: 0,
+                        borderWidth: 1,
                         renderTo: "container",
                         events: {
                             load: function () {
@@ -3513,27 +3326,38 @@
 
                         }
                     },
+                    credits: {
+                        enabled: true,
+                        href: "http://www.hagstova.fo",
+                        text: "Hagstova Føroya"
+                    },                     
                     rangeSelector: {
                         enabled: false
                     },
 
                     exporting: {
-                        enabled: false
+                        enabled: true
                     },
 
                     navigator: {
-                        enabled: false
+                        enabled: true
                     },
                     title: {
-                        text: ""
+                        text: "Samhandil við Noreg",
+                        y: 30
                     },
+                    subtitle: {
+                        text: 'í mió. kr.',
+                        y: 45,                        
+                    },                    
                     legend: {
+                        y: 60,
                         layout: "horizontal",
                         align: "center",
                         verticalAlign: "top",
 
                         itemStyle: {
-                            color: "#fff",
+                            color: "#000",
                             fontWeight: "normal"
                         }
                     },
@@ -3544,7 +3368,7 @@
                         type: "datetime",
                         labels: {
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 fontSize: "11px"
                             }
                         },
@@ -3554,25 +3378,25 @@
                         title: {
                             text: "",
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 fontWeight: "normal",
                                 fontSize: "12px"
                             }
                         },
-                        lineColor: "#fff",
-                        tickColor: "#fff",
+                        lineColor: "#000",
+                        tickColor: "#000",
                         labels: {
                             formatter: function () {
                                 return Highcharts.numberFormat(Math.abs(this.value),0);
                             },
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 font: "11px"
                             }
                         },
                     },
                     tooltip: {
-                        enabled: false
+                        enabled: true
                     },
                     plotOptions: {
                         series: {
@@ -3588,7 +3412,36 @@
                         
 
                     },
-                    series: []
+                    series: [{
+                    name: "Útflutningur",
+                    data: utflutningurdata,
+                    color: "#7fb800",
+                    borderWidth: 0,
+                    tooltip: {
+                        valueDecimals: 0
+                    }
+                }, {
+                    name: "Innflutningur",
+                    data: innflutningurdata,
+                    color: "#00a6ed",
+                    borderWidth: 0,
+
+                    tooltip: {
+                        valueDecimals: 0
+                    }
+                }, {
+                    name: "Handilsjavni",
+                    type: "spline",
+                    data: nettoflytingdata,
+                    color: "#000",
+                    borderWidth: 0,
+                    tooltip: {
+                        valueDecimals: 0
+                    },
+                    marker: {
+                        enabled: false
+                    }
+                }]
                 });
             }
 
@@ -3764,36 +3617,7 @@
 
 
                 //Build Series
-                var createdSeries = [{
-                    name: "Útflutningur",
-                    data: utflutningurdata,
-                    color: "#7fb800",
-                    borderWidth: 0,
-                    tooltip: {
-                        valueDecimals: 0
-                    }
-                }, {
-                    name: "Innflutningur",
-                    data: innflutningurdata,
-                    color: "#00a6ed",
-                    borderWidth: 0,
-
-                    tooltip: {
-                        valueDecimals: 0
-                    }
-                }, {
-                    name: "Handilsjavni",
-                    type: "spline",
-                    data: nettoflytingdata,
-                    color: "#fff",
-                    borderWidth: 0,
-                    tooltip: {
-                        valueDecimals: 0
-                    },
-                    marker: {
-                        enabled: false
-                    }
-                }];
+                var createdSeries = 0;
                 chart14CreatedSeries = createdSeries;
 
 
@@ -3822,7 +3646,7 @@
                     chart: {
                         type: "column",
                         backgroundColor: "rgba(255, 255, 255, 0)",
-                        borderWidth: 0,
+                        borderWidth: 1,
                         renderTo: "container",
                         events: {
                             load: function () {
@@ -3831,27 +3655,38 @@
 
                         }
                     },
+                    credits: {
+                        enabled: true,
+                        href: "http://www.hagstova.fo",
+                        text: "Hagstova Føroya"
+                    },                     
                     rangeSelector: {
                         enabled: false
                     },
 
                     exporting: {
-                        enabled: false
+                        enabled: true
                     },
 
                     navigator: {
-                        enabled: false
+                        enabled: true
                     },
                     title: {
-                        text: ""
+                        text: "Samhandil við ES",
+                        y: 30
                     },
+                    subtitle: {
+                        text: 'í mió. kr.',
+                        y: 45,                        
+                    },                    
                     legend: {
+                        y: 60,
                         layout: "horizontal",
                         align: "center",
                         verticalAlign: "top",
 
                         itemStyle: {
-                            color: "#fff",
+                            color: "#000",
                             fontWeight: "normal"
                         }
                     },
@@ -3862,7 +3697,7 @@
                         type: "datetime",
                         labels: {
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 fontSize: "11px"
                             }
                         },
@@ -3872,25 +3707,25 @@
                         title: {
                             text: "",
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 fontWeight: "normal",
                                 fontSize: "12px"
                             }
                         },
-                        lineColor: "#fff",
-                        tickColor: "#fff",
+                        lineColor: "#000",
+                        tickColor: "#000",
                         labels: {
                             formatter: function () {
                                 return Highcharts.numberFormat(Math.abs(this.value),0);
                             },
                             style: {
-                                color: "#fff",
+                                color: "#000",
                                 font: "11px"
                             }
                         },
                     },
                     tooltip: {
-                        enabled: false
+                        enabled: true
                     },
                     plotOptions: {
                         series: {
@@ -3906,7 +3741,36 @@
                         
 
                     },
-                    series: []
+                    series: [{
+                    name: "Útflutningur",
+                    data: utflutningurdata,
+                    color: "#7fb800",
+                    borderWidth: 0,
+                    tooltip: {
+                        valueDecimals: 0
+                    }
+                }, {
+                    name: "Innflutningur",
+                    data: innflutningurdata,
+                    color: "#00a6ed",
+                    borderWidth: 0,
+
+                    tooltip: {
+                        valueDecimals: 0
+                    }
+                }, {
+                    name: "Handilsjavni",
+                    type: "spline",
+                    data: nettoflytingdata,
+                    color: "#000",
+                    borderWidth: 0,
+                    tooltip: {
+                        valueDecimals: 0
+                    },
+                    marker: {
+                        enabled: false
+                    }
+                }]
                 });
             }
 
@@ -4030,311 +3894,39 @@
             });
 </script>
 
-<div class="reveal">
-    <div class="slides">
-
-
-        <section data-background="assets/utflutningur.jpg" data-autoslide="4000">
-            <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Inn- og útflutningur</h1>
-        </section>
-        <section data-state="innutflutningur" data-background="assets/utflutningur.jpg">
-            <div class="infobox blue">
-                <div class="background"></div>
-                <h2>Inn- og útflutningur<h2/>
-                <p>í mió. kr.</p>
-                    <div>
-                        <div id="chart1"></div>
-                    </div>
-            </div>
-        </section>
-
-
-        <section data-background="assets/innflutningur.jpg" data-autoslide="4000">
-            <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Innflutningur</h1>
-        </section>
-        <section data-state="innflutninguruttanskip" data-background="assets/innflutningur.jpg">
-            <div class="infobox blue">
-                <div class="background"></div>
-                <h2>Innflutningur <h2/>
-                <p>Uttan skip og flogfør. Í mió. kr.</p>
-                    <div>
-                        <div id="chart8"></div>
-                    </div>
-            </div>
-        </section>    
-
-
-
-
-        <section data-state="innflutningurslag" data-background="assets/innflutningur2.jpg">
-            <div class="infobox blue">
-                <div class="background"></div>
-                <h2>Innflutt til vinnu- og húsarhald <h2/>
-                <p>Í mió. kr.</p>
-                    <div>
-                        <div id="chart9"></div>
-                    </div>
-            </div>
-        </section>             
-
-
-        <section data-background="assets/fishmarket.jpg" data-autoslide="4000">
-            <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Fiskavørur</h1>
-        </section>
-        <section data-state="utflutningur" data-background="assets/fishmarket.jpg">
-            <div class="infobox blue left">
-                <div class="background"></div>
-                <h2>Útflutningur av fiskavørum<h2/>
-                <p>í mió. kr.</p>
-                    <div>
-                        <div id="chart2"></div>
-                    </div>
-            </div>
-        </section>        
-
-
-
-
-        <section data-state="fiskavoruutflutningur" data-background="assets/fishmarket.jpg">
-            <div class="infobox blue">
-                <div class="background"></div>
-                <h2>Útflutningur av fiskavørum<h2/>
-                <p>í mió. kr.</p>
-                    <div>
-                        <div id="chart3"></div>
-                    </div>
-            </div>
-        </section>
-
-
-
-
-        <section data-background="assets/moscow.jpg" data-background-transition="fade" data-autoslide="4000">
-            <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Russland</h1>
-        </section>
-        <section data-state="russland" data-background="assets/moscow.jpg"  data-autoslide="20000">
-            <div class="infobox blue">
-                <div class="background"></div>
-                <h2>Samhandil við Russland<h2/>
-                <p>í mió. kr.</p>
-                    <div>
-                        <div id="chart5"></div>
-                    </div>
-            </div>
-        </section>
-
-
-
-
-
-        <section data-background="assets/newyork.jpg" data-background-transition="fade" data-autoslide="4000">
-            <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />USA</h1>
-        </section>
-        <section data-state="usa" data-background="assets/newyork.jpg"  data-autoslide="20000">
-            <div class="infobox blue">
-                <div class="background"></div>
-                <h2>Samhandil við USA<h2/>
-                <p>í mió. kr.</p>
-                    <div>
-                        <div id="chart6"></div>
-                    </div>
-            </div>
-        </section>    
-
-
-
-
-        <section data-background="assets/london.jpg" data-background-transition="fade" data-autoslide="4000">
-            <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Stóra Bretland</h1>
-        </section>
-        <section data-state="storabretland" data-background="assets/london.jpg"  data-autoslide="20000">
-            <div class="infobox blue">
-                <div class="background"></div>
-                <h2>Samhandil við Stóra Bretland<h2/>
-                <p>í mió. kr.</p>
-                    <div>
-                        <div id="chart7"></div>
-                    </div>
-            </div>
-        </section>
-
-        <section data-background="assets/danmark.jpg" data-background-transition="fade" data-autoslide="4000">
-            <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Danmark</h1>
-        </section>
-        <section data-state="danmark" data-background="assets/danmark.jpg"  data-autoslide="20000">
-            <div class="infobox blue">
-                <div class="background"></div>
-                <h2>Samhandil við Danmark<h2/>
-                <p>í mió. kr.</p>
-                    <div>
-                        <div id="chart11"></div>
-                    </div>
-            </div>
-        </section>                        
-
-
-
-        <section data-background="assets/tyskland.jpg" data-background-transition="fade" data-autoslide="4000">
-            <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Týskland</h1>
-        </section>
-        <section data-state="tyskland" data-background="assets/tyskland.jpg"  data-autoslide="20000">
-            <div class="infobox blue">
-                <div class="background"></div>
-                <h2>Samhandil við Týskland<h2/>
-                <p>í mió. kr.</p>
-                    <div>
-                        <div id="chart12"></div>
-                    </div>
-            </div>
-        </section>   
-
-
-        <section data-background="assets/noreg.jpg" data-background-transition="fade" data-autoslide="4000">
-            <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Noreg</h1>
-        </section>
-        <section data-state="noreg" data-background="assets/noreg.jpg"  data-autoslide="20000">
-            <div class="infobox blue">
-                <div class="background"></div>
-                <h2>Samhandil við Noreg<h2/>
-                <p>í mió. kr.</p>
-                    <div>
-                        <div id="chart13"></div>
-                    </div>
-            </div>
-        </section>   
-
-
-
-
-        <section data-background="assets/es.jpg" data-background-transition="fade" data-autoslide="4000">
-            <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Evropa Samveldið</h1>
-        </section>
-        <section data-state="es" data-background="assets/es.jpg"  data-autoslide="20000">
-            <div class="infobox blue">
-                <div class="background"></div>
-                <h2>Samhandil við ES<h2/>
-                <p>í mió. kr.</p>
-                    <div>
-                        <div id="chart14"></div>
-                    </div>
-            </div>
-        </section>   
-
-
-<!--        <section data-background="assets/fatakravadi.jpg" data-autoslide="4000">
-            <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Fátækraváði</h1>
-        </section>
-        <section data-background="assets/fatakravadi.jpg">
-            <div class="infobox blue left">
-                <div class="background"></div>
-                <h2>Fátækraváði
-                    <h2/>
-                    <div>
-                        <div id="chart10"></div>
-                    </div>
-            </div>
-        </section>
-        <section data-background="assets/arbeidsfjold.jpg" data-autoslide="4000">
-            <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Arbeiðsfjøld</h1>
-        </section>
-        <section data-background="assets/arbeidsfjold.jpg">
-            <div class="infobox blue left">
-                <div class="background"></div>
-                <h2>Arbeiðsfjøld
-                    <h2/>
-                    <div>
-
-                    </div>
-            </div>
-        </section>-->
-
-    </div>
-</div>
-
-<script src="lib/js/head.min.js"></script>
-<script src="js/reveal.js"></script>
-
-<script>
-            // More info https://github.com/hakimel/reveal.js#configuration
-            Reveal.initialize({
-                history: true,
-
-                // More info https://github.com/hakimel/reveal.js#dependencies
-                dependencies: [
-                    { src: "plugin/notes/notes.js", async: true },
-                    { src: "plugin/highlight/highlight.js", async: true, callback: function () { hljs.initHighlightingOnLoad(); } }
-                ]
-            });
-
-
-
-            Reveal.addEventListener("innutflutningur", function () {
-                startAnimatingChart1();
-            }, false);
-
-            Reveal.addEventListener("innflutninguruttanskip", function () {
-                startAnimatingChart8();
-            }, false);
-
-            Reveal.addEventListener("innflutningurslag", function () {
-                startAnimatingChart9();
-            }, false);
-
-            Reveal.addEventListener("utflutningur", function () {
-                startAnimatingChart2();
-            }, false);
-
-            Reveal.addEventListener("fiskavoruutflutningur", function () {
-                startAnimatingChart3();
-            }, false);
-
-
-            Reveal.addEventListener("russland", function () {
-                startAnimatingChart5();
-            }, false);
-
-
-            Reveal.addEventListener("usa", function () {
-                startAnimatingChart6();
-            }, false);
-
-
-            Reveal.addEventListener("storabretland", function () {
-                startAnimatingChart7();
-            }, false);
-
-
-            Reveal.addEventListener("danmark", function () {
-                startAnimatingChart11();
-            }, false);
-
-            Reveal.addEventListener("tyskland", function () {
-                startAnimatingChart12();
-            }, false);
-
-
-            Reveal.addEventListener("noreg", function () {
-                startAnimatingChart13();
-            }, false);            
-
-            Reveal.addEventListener("es", function () {
-                startAnimatingChart14();
-            }, false);     
-
-            Reveal.addEventListener("fragmentshown", function (event) {
-                // Fragmentlistener
-
-            });
-
-
-            // Slide every 30 seconds
-            Reveal.configure({
-                autoSlide: 50000,
-                loop: true
-            });
-
-
-        </script>
+
+
+
+
+
+
+
+
+<div id="chart1"></div>
+
+<div id="chart8"></div>
+
+<div id="chart9"></div>
+
+<div id="chart3"></div>
+
+<div id="chart2"></div>
+
+<div id="chart5"></div>
+
+<div id="chart6"></div>
+
+<div id="chart7"></div>
+
+<div id="chart11"></div>
+
+<div id="chart12"></div>
+
+<div id="chart13"></div>
+
+<div id="chart14"></div>
+
+
 
 
 </body>

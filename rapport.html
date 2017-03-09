@@ -477,6 +477,11 @@
                         if(month.length == 1) {
                             month = "0" + month;
                         }
+
+                        if(skipflogfor[j] = "-") {
+                            skipflogfor[j] = "0";
+                        }
+
                         innflutningurdata.push([Date.parse(year[i] + "-" + month), (innflutningur[j] - skipflogfor[j])*0.001]);
                     }
                 }
@@ -544,7 +549,7 @@
                         y: 30
                     },
                     subtitle: {
-                        text: 'í mió. kr.',
+                        text: 'Uttan skip og flogfør. Í mió. kr.',
                         y: 45,                        
                     },                    
                     legend: {
@@ -606,7 +611,7 @@
                     plotOptions: {
                         line: {
                             marker: {
-                                enabled: true
+                                enabled: false
                             },
                         },
                         series: {
@@ -1444,7 +1449,7 @@
                 {
                     name: "Onnur fiskasløg",
                     data: onnurfiskaslogdata,
-                    color: "#ecf0f1",
+                    color: "#00a6ed",
                     tooltip: {
                         valueDecimals: 1
                     },

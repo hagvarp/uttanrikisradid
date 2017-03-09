@@ -467,9 +467,9 @@
 
                 for (var i = 0; i < fLen; i++) {
                     var innflutningur = ds.Data({ "BEC-groups": "0", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
-                    var skipflogfor = ds.Data({ "BEC-groups": "49", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+                    var skipflogfor = ds.Data({ "BEC-groups": "49", "year": ds.Dimension("year").id[i] }, false).map(function(n) { return n !== "-" | null | n }).filter(function(n) { return n; });
 
-
+                    console.log(skipflogfor);
 
 
                     for (var j = 0; j < innflutningur.length; j++) {
@@ -478,9 +478,9 @@
                             month = "0" + month;
                         }
 
-                        if(skipflogfor[j] = "-") {
-                            skipflogfor[j] = "0";
-                        }
+
+
+
 
                         innflutningurdata.push([Date.parse(year[i] + "-" + month), (innflutningur[j] - skipflogfor[j])*0.001]);
                     }

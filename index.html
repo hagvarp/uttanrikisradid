@@ -3297,6 +3297,636 @@
 
 
 
+//---------------------------------------------------------
+//                                CHART 12
+//---------------------------------------------------------
+
+            var chart12;
+            var chart12Data;
+            var chart12CreatedSeries;
+            var chart12_last_month;
+            var chart12Timeout0;
+            var chart12Timeout1;
+            var chart12Timeout2;
+            var chart12Timeout3;
+
+            function startAnimatingChart12() {
+                clearTimeout(chart12Timeout0);
+                clearTimeout(chart12Timeout1);
+                clearTimeout(chart12Timeout2);
+                clearTimeout(chart12Timeout3);
+
+                drawChart12();
+
+                chart12Timeout0 = setTimeout(function() {
+                    chart12.addSeries(chart12CreatedSeries[0]);
+                }, 0);
+                chart12Timeout1 = setTimeout(function() {
+                    chart12.addSeries(chart12CreatedSeries[1]);
+                }, 2000);
+                chart12Timeout2 = setTimeout(function() {
+                    chart12.addSeries(chart12CreatedSeries[2]);
+                }, 4000);
+
+                chart12Timeout3 =setTimeout(function () {
+                    chart12.update({xAxis: {
+                        min: null,
+                        max:null,
+                    }});
+                }, 25000);
+            }
+
+            //Chart 12 specific functions
+            function drawChart12() {
+
+                var jsonStatData = chart12Data;
+                var jsonStatUtflutningurData= chart12bData;
+
+
+                //Extrat Data From JSON Stat
+
+                ds = JSONstat(jsonStatData).Dataset(0);
+
+
+                dsutflutningur = JSONstat(jsonStatUtflutningurData).Dataset(0);
+
+                t = dsutflutningur.Dimension("year").length - 1;
+                year = dsutflutningur.Dimension("year").id;
+
+                yearinnflutningur = ds.Dimension("year").id;
+                yearinnflutningurlength = yearinnflutningur.length
+                var fLen = year.length;
+
+                yearinnflutningurutflutningurdifference = yearinnflutningurlength - fLen;
+
+
+                //Format Data
+
+                var innflutningurdata = [];
+                var utflutningurdata = [];
+                var nettoflytingdata = [];
+
+                var yaxisinnflutningur = [];
+                var yaxisutflutningur = [];
+
+
+
+                
+
+                for (var i = 0; i < fLen; i++) {
+
+                    innflutningur = ds.Data({ "year": ds.Dimension("year").id[i] }, false);
+
+
+
+                    utflutningur = dsutflutningur.Data({ "year": dsutflutningur.Dimension("year").id[i] }, false);
+
+                    innflutningurdata.push([Date.parse(year[i]), -innflutningur/1000]);
+
+
+                    utflutningurdata.push([Date.parse(year[i]), utflutningur/1000]);
+                    nettoflytingdata.push([Date.parse(year[i]), (utflutningur - innflutningur)/1000]);
+
+
+
+                }
+
+
+
+
+                //Build Series
+                var createdSeries = [{
+                    name: "Útflutningur",
+                    data: utflutningurdata,
+                    color: "#7fb800",
+                    borderWidth: 0,
+                    tooltip: {
+                        valueDecimals: 0
+                    }
+                }, {
+                    name: "Innflutningur",
+                    data: innflutningurdata,
+                    color: "#00a6ed",
+                    borderWidth: 0,
+
+                    tooltip: {
+                        valueDecimals: 0
+                    }
+                }, {
+                    name: "Handilsjavni",
+                    type: "spline",
+                    data: nettoflytingdata,
+                    color: "#fff",
+                    borderWidth: 0,
+                    tooltip: {
+                        valueDecimals: 0
+                    },
+                    marker: {
+                        enabled: false
+                    }
+                }];
+                chart12CreatedSeries = createdSeries;
+
+
+                //Build Title
+                var title = ds.label;
+
+                //Build subtitle
+                var subtitle = ds.source;
+
+                //Build Tooltip
+                var tooltipFunction = function () {
+                    var s = "<b>" + Highcharts.dateFormat("%Y-%b", this.x) + "</b>";
+                    $.each(this.points,
+                        function (i, point) {
+                            s += "<br/>" + point.series.name + ": " + Highcharts.numberFormat(point.y, 0.0, ",", ".");
+                        });
+
+                    return s;
+                }
+
+                //Build Chart
+                $("#chart12").highcharts({
+                    credits: {
+                        enabled: false
+                    },
+                    chart: {
+                        type: "column",
+                        backgroundColor: "rgba(255, 255, 255, 0)",
+                        borderWidth: 0,
+                        renderTo: "container",
+                        events: {
+                            load: function () {
+                                chart12 = this;
+                            }
+
+                        }
+                    },
+                    rangeSelector: {
+                        enabled: false
+                    },
+
+                    exporting: {
+                        enabled: false
+                    },
+
+                    navigator: {
+                        enabled: false
+                    },
+                    title: {
+                        text: ""
+                    },
+                    legend: {
+                        layout: "horizontal",
+                        align: "center",
+                        verticalAlign: "top",
+
+                        itemStyle: {
+                            color: "#fff",
+                            fontWeight: "normal"
+                        }
+                    },
+                    xAxis: {
+                        title: {
+                            enabled: false
+                        },
+                        type: "datetime",
+                        labels: {
+                            style: {
+                                color: "#fff",
+                                fontSize: "11px"
+                            }
+                        },
+
+                    },
+                    yAxis: {
+                        title: {
+                            text: "",
+                            style: {
+                                color: "#fff",
+                                fontWeight: "normal",
+                                fontSize: "12px"
+                            }
+                        },
+                        lineColor: "#fff",
+                        tickColor: "#fff",
+                        labels: {
+                            formatter: function () {
+                                return Highcharts.numberFormat(Math.abs(this.value),0);
+                            },
+                            style: {
+                                color: "#fff",
+                                font: "11px"
+                            }
+                        },
+                    },
+                    tooltip: {
+                        enabled: false
+                    },
+                    plotOptions: {
+                        series: {
+                            stacking: "normal",
+                            showInNavigator: true,
+                            dataGrouping:{
+                                enabled: true,
+                                approximation: "sum",
+                                units:[ ["year", null]]
+                            }
+                        },
+
+                        
+
+                    },
+                    series: []
+                });
+            }
+
+            function loadDataAndBuildChart12() {
+                POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_innlond.px", {
+                    "query": [
+                        {
+                          "code": "country of origin",
+                          "selection": {
+                            "filter": "item",
+                            "values": [
+                              "004"
+                            ]
+                          }
+                        },
+                        {
+                          "code": "year",
+                          "selection": {
+                            "filter": "all",
+                            "values": [
+                              "*"
+                            ]
+                          }
+                        }                       
+                    ],
+                    "response": {
+                        "format": "json-stat"
+
+                    }
+
+                },function(data) {
+                    chart12Data = data;
+                    loadDataAndBuildChart12b();
+                } );
+            }
+
+
+            function loadDataAndBuildChart12b() {
+                POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_utlond.px", {
+                    "query": [
+                        {
+                          "code": "country of consumption",
+                          "selection": {
+                            "filter": "item",
+                            "values": [
+                              "004"
+                            ]
+                          }
+                        },
+                        {
+                          "code": "year",
+                          "selection": {
+                            "filter": "all",
+                            "values": [
+                              "*"
+                            ]
+                          }
+                        }   
+                    ],
+                    "response": {
+                        "format": "json-stat"
+
+                    }
+
+                },function(data) {
+                    chart12bData = data;
+                    drawChart12();
+                    startAnimatingChart12();
+                } );
+            }
+
+
+
+
+
+
+
+//---------------------------------------------------------
+//                                CHART 13
+//---------------------------------------------------------
+
+            var chart13;
+            var chart13Data;
+            var chart13CreatedSeries;
+            var chart13_last_month;
+            var chart13Timeout0;
+            var chart13Timeout1;
+            var chart13Timeout2;
+            var chart13Timeout3;
+
+            function startAnimatingChart13() {
+                clearTimeout(chart13Timeout0);
+                clearTimeout(chart13Timeout1);
+                clearTimeout(chart13Timeout2);
+                clearTimeout(chart13Timeout3);
+
+                drawChart13();
+
+                chart13Timeout0 = setTimeout(function() {
+                    chart13.addSeries(chart13CreatedSeries[0]);
+                }, 0);
+                chart13Timeout1 = setTimeout(function() {
+                    chart13.addSeries(chart13CreatedSeries[1]);
+                }, 2000);
+                chart13Timeout2 = setTimeout(function() {
+                    chart13.addSeries(chart13CreatedSeries[2]);
+                }, 4000);
+
+                chart13Timeout3 =setTimeout(function () {
+                    chart13.update({xAxis: {
+                        min: null,
+                        max:null,
+                    }});
+                }, 25000);
+            }
+
+            //Chart 13 specific functions
+            function drawChart13() {
+
+                var jsonStatData = chart13Data;
+                var jsonStatUtflutningurData= chart13bData;
+
+
+                //Extrat Data From JSON Stat
+
+                ds = JSONstat(jsonStatData).Dataset(0);
+
+
+                dsutflutningur = JSONstat(jsonStatUtflutningurData).Dataset(0);
+
+                t = dsutflutningur.Dimension("year").length - 1;
+                year = dsutflutningur.Dimension("year").id;
+
+                yearinnflutningur = ds.Dimension("year").id;
+                yearinnflutningurlength = yearinnflutningur.length
+                var fLen = year.length;
+
+                yearinnflutningurutflutningurdifference = yearinnflutningurlength - fLen;
+
+
+                //Format Data
+
+                var innflutningurdata = [];
+                var utflutningurdata = [];
+                var nettoflytingdata = [];
+
+                var yaxisinnflutningur = [];
+                var yaxisutflutningur = [];
+
+
+
+                
+
+                for (var i = 0; i < fLen; i++) {
+
+                    innflutningur = ds.Data({ "year": ds.Dimension("year").id[i] }, false);
+
+
+
+                    utflutningur = dsutflutningur.Data({ "year": dsutflutningur.Dimension("year").id[i] }, false);
+
+                    innflutningurdata.push([Date.parse(year[i]), -innflutningur/1000]);
+
+
+                    utflutningurdata.push([Date.parse(year[i]), utflutningur/1000]);
+                    nettoflytingdata.push([Date.parse(year[i]), (utflutningur - innflutningur)/1000]);
+
+
+
+                }
+
+
+
+
+                //Build Series
+                var createdSeries = [{
+                    name: "Útflutningur",
+                    data: utflutningurdata,
+                    color: "#7fb800",
+                    borderWidth: 0,
+                    tooltip: {
+                        valueDecimals: 0
+                    }
+                }, {
+                    name: "Innflutningur",
+                    data: innflutningurdata,
+                    color: "#00a6ed",
+                    borderWidth: 0,
+
+                    tooltip: {
+                        valueDecimals: 0
+                    }
+                }, {
+                    name: "Handilsjavni",
+                    type: "spline",
+                    data: nettoflytingdata,
+                    color: "#fff",
+                    borderWidth: 0,
+                    tooltip: {
+                        valueDecimals: 0
+                    },
+                    marker: {
+                        enabled: false
+                    }
+                }];
+                chart13CreatedSeries = createdSeries;
+
+
+                //Build Title
+                var title = ds.label;
+
+                //Build subtitle
+                var subtitle = ds.source;
+
+                //Build Tooltip
+                var tooltipFunction = function () {
+                    var s = "<b>" + Highcharts.dateFormat("%Y-%b", this.x) + "</b>";
+                    $.each(this.points,
+                        function (i, point) {
+                            s += "<br/>" + point.series.name + ": " + Highcharts.numberFormat(point.y, 0.0, ",", ".");
+                        });
+
+                    return s;
+                }
+
+                //Build Chart
+                $("#chart13").highcharts({
+                    credits: {
+                        enabled: false
+                    },
+                    chart: {
+                        type: "column",
+                        backgroundColor: "rgba(255, 255, 255, 0)",
+                        borderWidth: 0,
+                        renderTo: "container",
+                        events: {
+                            load: function () {
+                                chart13 = this;
+                            }
+
+                        }
+                    },
+                    rangeSelector: {
+                        enabled: false
+                    },
+
+                    exporting: {
+                        enabled: false
+                    },
+
+                    navigator: {
+                        enabled: false
+                    },
+                    title: {
+                        text: ""
+                    },
+                    legend: {
+                        layout: "horizontal",
+                        align: "center",
+                        verticalAlign: "top",
+
+                        itemStyle: {
+                            color: "#fff",
+                            fontWeight: "normal"
+                        }
+                    },
+                    xAxis: {
+                        title: {
+                            enabled: false
+                        },
+                        type: "datetime",
+                        labels: {
+                            style: {
+                                color: "#fff",
+                                fontSize: "11px"
+                            }
+                        },
+
+                    },
+                    yAxis: {
+                        title: {
+                            text: "",
+                            style: {
+                                color: "#fff",
+                                fontWeight: "normal",
+                                fontSize: "12px"
+                            }
+                        },
+                        lineColor: "#fff",
+                        tickColor: "#fff",
+                        labels: {
+                            formatter: function () {
+                                return Highcharts.numberFormat(Math.abs(this.value),0);
+                            },
+                            style: {
+                                color: "#fff",
+                                font: "11px"
+                            }
+                        },
+                    },
+                    tooltip: {
+                        enabled: false
+                    },
+                    plotOptions: {
+                        series: {
+                            stacking: "normal",
+                            showInNavigator: true,
+                            dataGrouping:{
+                                enabled: true,
+                                approximation: "sum",
+                                units:[ ["year", null]]
+                            }
+                        },
+
+                        
+
+                    },
+                    series: []
+                });
+            }
+
+            function loadDataAndBuildChart13() {
+                POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_innlond.px", {
+                    "query": [
+                        {
+                          "code": "country of origin",
+                          "selection": {
+                            "filter": "item",
+                            "values": [
+                              "028"
+                            ]
+                          }
+                        },
+                        {
+                          "code": "year",
+                          "selection": {
+                            "filter": "all",
+                            "values": [
+                              "*"
+                            ]
+                          }
+                        }                       
+                    ],
+                    "response": {
+                        "format": "json-stat"
+
+                    }
+
+                },function(data) {
+                    chart13Data = data;
+                    loadDataAndBuildChart13b();
+                } );
+            }
+
+
+            function loadDataAndBuildChart13b() {
+                POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_utlond.px", {
+                    "query": [
+                        {
+                          "code": "country of consumption",
+                          "selection": {
+                            "filter": "item",
+                            "values": [
+                              "028"
+                            ]
+                          }
+                        },
+                        {
+                          "code": "year",
+                          "selection": {
+                            "filter": "all",
+                            "values": [
+                              "*"
+                            ]
+                          }
+                        }   
+                    ],
+                    "response": {
+                        "format": "json-stat"
+
+                    }
+
+                },function(data) {
+                    chart13bData = data;
+                    drawChart13();
+                    startAnimatingChart13();
+                } );
+            }
+
 
 
 
@@ -3340,7 +3970,9 @@
                 loadDataAndBuildChart8();  
                 loadDataAndBuildChart9();                                                                          
 
-                loadDataAndBuildChart11();                
+                loadDataAndBuildChart11();
+                loadDataAndBuildChart12();   
+                loadDataAndBuildChart13();                                               
             });
 </script>
 
@@ -3502,6 +4134,37 @@
         </section>                        
 
 
+
+        <section data-background="assets/tyskland.jpg" data-background-transition="fade" data-autoslide="4000">
+            <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Týskland</h1>
+        </section>
+        <section data-state="tyskland" data-background="assets/tyskland.jpg">
+            <div class="infobox blue">
+                <div class="background"></div>
+                <h2>Samhandil við Týskland<h2/>
+                <p>í mió. kr.</p>
+                    <div>
+                        <div id="chart12"></div>
+                    </div>
+            </div>
+        </section>   
+
+
+        <section data-background="assets/noreg.jpg" data-background-transition="fade" data-autoslide="4000">
+            <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Noreg</h1>
+        </section>
+        <section data-state="noreg" data-background="assets/noreg.jpg">
+            <div class="infobox blue">
+                <div class="background"></div>
+                <h2>Samhandil við Noreg<h2/>
+                <p>í mió. kr.</p>
+                    <div>
+                        <div id="chart13"></div>
+                    </div>
+            </div>
+        </section>   
+
+
 <!--        <section data-background="assets/fatakravadi.jpg" data-autoslide="4000">
             <h1><img src="assets/hagstova_logo_white.svg" alt="Hagstova Føroya" class="logo" />Fátækraváði</h1>
         </section>
@@ -3589,6 +4252,14 @@
                 startAnimatingChart11();
             }, false);
 
+            Reveal.addEventListener("tyskland", function () {
+                startAnimatingChart12();
+            }, false);
+
+
+            Reveal.addEventListener("tyskland", function () {
+                startAnimatingChart13();
+            }, false);            
 
             Reveal.addEventListener("fragmentshown", function (event) {
                 // Fragmentlistener

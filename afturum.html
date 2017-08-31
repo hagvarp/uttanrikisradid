@@ -1793,7 +1793,7 @@
                 POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_innlond.px", {
                     "query": [
 					    {
-					      "code": "country of final destination",
+					      "code": "country of origin",
 					      "selection": {
 					        "filter": "item",
 					        "values": [
@@ -1827,7 +1827,7 @@
                 POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_utlond.px", {
                     "query": [
                         {
-					      "code": "country of consumption",
+					      "code": "country of final destination",
 					      "selection": {
 					        "filter": "item",
 					        "values": [
@@ -2123,7 +2123,7 @@
                 POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_innlond.px", {
                     "query": [
 					    {
-					      "code": "country of final destination",
+					      "code": "country of origin",
 					      "selection": {
 					        "filter": "item",
 					        "values": [
@@ -2157,7 +2157,7 @@
                 POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_utlond.px", {
                     "query": [
                         {
-					      "code": "country of consumption",
+					      "code": "country of final destination",
 					      "selection": {
 					        "filter": "item",
 					        "values": [
@@ -2456,7 +2456,7 @@
                 POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_innlond.px", {
                     "query": [
 					    {
-					      "code": "country of final destination",
+					      "code": "country of origin",
 					      "selection": {
 					        "filter": "item",
 					        "values": [
@@ -2490,7 +2490,7 @@
                 POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_utlond.px", {
                     "query": [
                         {
-					      "code": "country of consumption",
+					      "code": "country of final destination",
 					      "selection": {
 					        "filter": "item",
 					        "values": [
@@ -2786,7 +2786,7 @@
                 POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_innlond.px", {
                     "query": [
                         {
-                          "code": "country of final destination",
+                          "code": "country of origin",
                           "selection": {
                             "filter": "item",
                             "values": [
@@ -2820,7 +2820,7 @@
                 POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_utlond.px", {
                     "query": [
                         {
-                          "code": "country of consumption",
+                          "code": "country of final destination",
                           "selection": {
                             "filter": "item",
                             "values": [
@@ -3118,7 +3118,7 @@
                 POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_innlond.px", {
                     "query": [
                         {
-                          "code": "country of final destination",
+                          "code": "country of origin",
                           "selection": {
                             "filter": "item",
                             "values": [
@@ -3152,7 +3152,7 @@
                 POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_utlond.px", {
                     "query": [
                         {
-                          "code": "country of consumption",
+                          "code": "country of final destination",
                           "selection": {
                             "filter": "item",
                             "values": [
@@ -3447,7 +3447,7 @@
                 POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_innlond.px", {
                     "query": [
                         {
-                          "code": "country of final destination",
+                          "code": "country of origin",
                           "selection": {
                             "filter": "item",
                             "values": [
@@ -3481,7 +3481,7 @@
                 POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_utlond.px", {
                     "query": [
                         {
-                          "code": "country of consumption",
+                          "code": "country of final destination",
                           "selection": {
                             "filter": "item",
                             "values": [
@@ -3776,7 +3776,7 @@
                 POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_innlond.px", {
                     "query": [
                         {
-                          "code": "country of final destination",
+                          "code": "country of origin",
                           "selection": {
                             "filter": "agg:ES28.agg",
                             "values": [
@@ -3810,7 +3810,7 @@
                 POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_utlond.px", {
                     "query": [
                         {
-                          "code": "country of consumption",
+                          "code": "country of final destination",
                           "selection": {
                             "filter": "agg:ES28.agg",
                             "values": [
@@ -3877,13 +3877,16 @@
             //START LOADING AND BUILDING CHARTS
             $(function () {
                 loadDataAndBuildChart1();
-                loadDataAndBuildChart2();
+
+                loadDataAndBuildChart8();  
+                loadDataAndBuildChart9();                                                                          
+
                 loadDataAndBuildChart3();
+                loadDataAndBuildChart2();
+
                 loadDataAndBuildChart5(); 
                 loadDataAndBuildChart6();   
                 loadDataAndBuildChart7();   
-                loadDataAndBuildChart8();  
-                loadDataAndBuildChart9();                                                                          
 
                 loadDataAndBuildChart11();
                 loadDataAndBuildChart12();   

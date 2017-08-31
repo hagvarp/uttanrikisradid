@@ -469,8 +469,6 @@
                     var innflutningur = ds.Data({ "BEC-groups": "0", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
                     var skipflogfor = ds.Data({ "BEC-groups": "49", "year": ds.Dimension("year").id[i] }, false).map(function(n) { return n !== "-" | null | n }).filter(function(n) { return n; });
 
-                    console.log(skipflogfor);
-
 
                     for (var j = 0; j < innflutningur.length; j++) {
                         var month = m[j];
@@ -1795,7 +1793,7 @@
                 POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_innlond.px", {
                     "query": [
 					    {
-					      "code": "country of origin",
+					      "code": "country of final destination",
 					      "selection": {
 					        "filter": "item",
 					        "values": [
@@ -2125,7 +2123,7 @@
                 POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_innlond.px", {
                     "query": [
 					    {
-					      "code": "country of origin",
+					      "code": "country of final destination",
 					      "selection": {
 					        "filter": "item",
 					        "values": [
@@ -2458,7 +2456,7 @@
                 POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_innlond.px", {
                     "query": [
 					    {
-					      "code": "country of origin",
+					      "code": "country of final destination",
 					      "selection": {
 					        "filter": "item",
 					        "values": [
@@ -2788,7 +2786,7 @@
                 POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_innlond.px", {
                     "query": [
                         {
-                          "code": "country of origin",
+                          "code": "country of final destination",
                           "selection": {
                             "filter": "item",
                             "values": [
@@ -3120,7 +3118,7 @@
                 POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_innlond.px", {
                     "query": [
                         {
-                          "code": "country of origin",
+                          "code": "country of final destination",
                           "selection": {
                             "filter": "item",
                             "values": [
@@ -3449,7 +3447,7 @@
                 POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_innlond.px", {
                     "query": [
                         {
-                          "code": "country of origin",
+                          "code": "country of final destination",
                           "selection": {
                             "filter": "item",
                             "values": [
@@ -3778,7 +3776,7 @@
                 POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_innlond.px", {
                     "query": [
                         {
-                          "code": "country of origin",
+                          "code": "country of final destination",
                           "selection": {
                             "filter": "agg:ES28.agg",
                             "values": [

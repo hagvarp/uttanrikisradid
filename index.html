@@ -144,8 +144,8 @@
                 for (var i = 0; i < fLen; i++) {
 
 
-                    innflutningur = ds.Data({ "BEC-groups": "0", "year": ds.Dimension("year").id[i + yearinnflutningurutflutningurdifference] }, false).filter(function(n) { return n; });
-                    utflutningur = dsutflutningur.Data({ "unit": "0", "commodity group": "0", "year": dsutflutningur.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+                    innflutningur = ds.Data({ "BEC-groups": "TOT", "year": ds.Dimension("year").id[i + yearinnflutningurutflutningurdifference] }, false).filter(function(n) { return n; });
+                    utflutningur = dsutflutningur.Data({ "unit": "DKK", "commodity group": "TOT", "year": dsutflutningur.Dimension("year").id[i] }, false).filter(function(n) { return n; });
 
 
                     for (var j = 0; j < utflutningur.length; j++) {
@@ -327,27 +327,16 @@
                               "selection": {
                                 "filter": "item",
                                 "values": [
-                                  "0"
+                                  "TOT"
                                 ]
                               }
                             },
                         {
                           "code": "month",
                           "selection": {
-                            "filter": "item",
+                            "filter": "all",
                             "values": [
-                              "1",
-                              "2",
-                              "3",
-                              "4",
-                              "5",
-                              "6",
-                              "7",
-                              "8",
-                              "9",
-                              "10",
-                              "11",
-                              "12"
+                              "*"
                             ]
                           }
                         }
@@ -372,7 +361,7 @@
                           "selection": {
                             "filter": "item",
                             "values": [
-                              "0"
+                              "DKK"
                             ]
                           }
                         },
@@ -381,27 +370,16 @@
                               "selection": {
                                 "filter": "item",
                                 "values": [
-                                  "0"
+                                  "TOT"
                                 ]
                               }
                             },
                         {
                           "code": "month",
                           "selection": {
-                            "filter": "item",
+                            "filter": "all",
                             "values": [
-                              "1",
-                              "2",
-                              "3",
-                              "4",
-                              "5",
-                              "6",
-                              "7",
-                              "8",
-                              "9",
-                              "10",
-                              "11",
-                              "12"
+                              "*"
                             ]
                           }
                         }
@@ -460,8 +438,8 @@
                 var innflutningurdata = [];
 
                 for (var i = 0; i < fLen; i++) {
-                    var innflutningur = ds.Data({ "BEC-groups": "0", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
-                    var skipflogfor = ds.Data({ "BEC-groups": "49", "year": ds.Dimension("year").id[i] }, false).map(function(n) { return n !== "-" | null | n }).filter(function(n) { return n; });
+                    var innflutningur = ds.Data({ "BEC-groups": "TOT", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+                    var skipflogfor = ds.Data({ "BEC-groups": "10", "year": ds.Dimension("year").id[i] }, false).map(function(n) { return n !== "-" | null | n }).filter(function(n) { return n; });
 
 
 
@@ -631,28 +609,17 @@
                           "selection": {
                             "filter": "item",
                             "values": [
-                              "0",
-                              "49"
+                              "TOT",
+                              "10"
                             ]
                           }
                         },
                         {
                             "code": "month",
                             "selection": {
-                                "filter": "item",
+                                "filter": "all",
                                 "values": [
-                                    "1",
-                                    "2",
-                                    "3",
-                                    "4",
-                                    "5",
-                                    "6",
-                                    "7",
-                                    "8",
-                                    "9",
-                                    "10",
-                                    "11",
-                                    "12"
+                                    "*"
                                 ]
                             }
                         }
@@ -713,11 +680,11 @@
                 var husarhalddata = [];
 
                 for (var i = 0; i < fLen; i++) {
-                    var husarhald = ds.Data({ "BEC-groups": "41", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
-                    var havlandbunad = ds.Data({ "BEC-groups": "1", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
-                    var byggivirki = ds.Data({ "BEC-groups": "5", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
-                    var fiskivirki = ds.Data({ "BEC-groups": "11", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
-                    var onnurframleidlsa = ds.Data({ "BEC-groups": "51", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+                    var husarhald = ds.Data({ "BEC-groups": "8", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+                    var havlandbunad = ds.Data({ "BEC-groups": "2", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+                    var byggivirki = ds.Data({ "BEC-groups": "3", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+                    var fiskivirki = ds.Data({ "BEC-groups": "4", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+                    var onnurframleidlsa = ds.Data({ "BEC-groups": "12", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
 
 
                     for (var j = 0; j < havlandbunad.length; j++) {
@@ -884,31 +851,20 @@
                           "selection": {
                             "filter": "item",
                             "values": [
-                                  "1",
-                                  "5",
-                                  "11",
-                                  "41",
-                                  "51"
+                                  "2",
+                                  "3",
+                                  "4",
+                                  "8",
+                                  "12"
                             ]
                           }
                         },
                         {
                             "code": "month",
                             "selection": {
-                                "filter": "item",
+                                "filter": "all",
                                 "values": [
-                                    "1",
-                                    "2",
-                                    "3",
-                                    "4",
-                                    "5",
-                                    "6",
-                                    "7",
-                                    "8",
-                                    "9",
-                                    "10",
-                                    "11",
-                                    "12"
+                                    "*"
                                 ]
                             }
                         }
@@ -960,22 +916,23 @@
                 var fLen = year.length;
                 m = ds.Dimension("month").id;
 
+                
                 //Format Data
                 var utflutningurdata = [];
 
                 for (var i = 0; i < fLen; i++) {
-                    var utflutningur = ds.Data({ "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+                    var utflutningur = ds.Data({ "fish species and other groups": "TOT", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+                    var adrarvorur = ds.Data({ "fish species and other groups": "91", "year": ds.Dimension("year").id[i] }, false).map(function(n) { return n !== "-" | null | n }).filter(function(n) { return n; });
+                    var skipflogfor = ds.Data({ "fish species and other groups": "90", "year": ds.Dimension("year").id[i] }, false).map(function(n) { return n !== "-" | null | n }).filter(function(n) { return n; });
 
                     for (var j = 0; j < utflutningur.length; j++) {
                         var month = m[j];
                         if(month.length == 1) {
                             month = "0" + month;
                         }
-                        utflutningurdata.push([Date.parse(year[i] + "-" + month), utflutningur[j]*0.001]);
+                        utflutningurdata.push([Date.parse(year[i] + "-" + month), (utflutningur[j]-adrarvorur[j]-skipflogfor[j])*0.001]);
                     }
                 }
-
-
 
 
 
@@ -1124,34 +1081,35 @@
             }
 
             function loadDataAndBuildChart2() {
-                POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_ututgr.px", {
+                POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_utfisk.px", {
                     "query": [
                         {
                             "code": "unit",
                             "selection": {
                                 "filter": "item",
                                 "values": [
-                                    "0"
+                                    "DKK"
+                                ]
+                            }
+                        },
+                        {
+                            "code": "fish species and other groups",
+                            "selection": {
+                                "filter": "item",
+                                "values": [
+                                    "TOT",
+                                    "91",
+                                    "90"
+
                                 ]
                             }
                         },
                         {
                             "code": "month",
                             "selection": {
-                                "filter": "item",
+                                "filter": "all",
                                 "values": [
-                                    "1",
-                                    "2",
-                                    "3",
-                                    "4",
-                                    "5",
-                                    "6",
-                                    "7",
-                                    "8",
-                                    "9",
-                                    "10",
-                                    "11",
-                                    "12"
+                                    "*"
                                 ]
                             }
                         }
@@ -1165,248 +1123,6 @@
                     startAnimatingChart2();
                 });
             }
-
-
-
-
-
-
-
-
-//---------------------------------------------------------
-//                       CHART 4
-//---------------------------------------------------------
-            var chart4;
-            var chart4Data;
-            var chart4_last_month;
-            var chart4Timeout0;
-
-            function startAnimatingChart4() {
-                clearTimeout(chart4Timeout0);
-
-                drawChart4();
-
-                chart4Timeout0 = setTimeout(function () {
-                    chart4.update({xAxis: {
-                        min: null,
-                        max: null
-                    }});
-                }, 25000);
-            }
-
-            //Chart 4 specific functions
-            function drawChart4() {
-                var jsonStatData = chart4Data;
-
-                //Extrat Data From JSON Stat
-                ds = JSONstat(jsonStatData).Dataset(0);
-                t = ds.Dimension("year").length - 1;
-                year = ds.Dimension("year").id;
-
-                var fLen = year.length;
-                m = ds.Dimension("month").id;
-
-                //Format Data
-                var unemploymentdata = [];
-
-                for (var i = 0; i < fLen; i++) {
-                    var unemployment = ds.Data({ "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
-
-                    for (var j = 0; j < unemployment.length; j++) {
-                        var month = m[j];
-                        if(month.length == 1) {
-                            month = "0" + month;
-                        }
-                        unemploymentdata.push([Date.parse(year[i] + "-" + month), unemployment[j]]);
-                    }
-                }
-
-                var chart4_last_month = unemploymentdata[unemploymentdata.length - 1];
-                chart4_last_month = chart4_last_month[0];
-
-                //Build Series
-                var createdSeries = [{
-                    name: "Arbeiðsloysi",
-                    data: unemploymentdata,
-                    color: "#fff",
-                    tooltip: {
-                        valueDecimals: 1
-                    }
-                }
-                ];
-
-                //Build Title
-                var title = ds.label;
-
-                //Build subtitle
-                var subtitle = ds.source;
-
-                //Build Tooltip
-                var tooltipFunction = function () {
-                    var s = "<b>" + Highcharts.dateFormat("%Y-%b", this.x) + "</b>";
-                    $.each(this.points,
-                        function (i, point) {
-                            s += "<br/>" + point.series.name + ": " + Highcharts.numberFormat(point.y, 0.0, ",", ".");
-                        });
-
-                    return s;
-                }
-
-                //Build Chart
-                $("#chart4").highcharts({
-                    credits: {
-                        enabled: false
-                    },
-                    chart: {
-                        type:"line",
-                        backgroundColor: "rgba(255, 255, 255, 0)",
-                        borderWidth: 0,
-                        renderTo: "container",
-                        events: {
-                            load: function () {
-                                chart4 = this;
-                            }
-                        }
-                    },
-                    rangeSelector: {
-                        enabled: false
-                    },
-
-                    exporting: {
-                        enabled: false
-                    },
-                    navigator: {
-                        enabled: false
-                    },
-                    title: {
-                        text: ""
-                    },
-                    legend: {
-                        layout: "horizontal",
-                        align: "center",
-                        verticalAlign: "top",
-                        itemStyle: {
-                            color: "#fff",
-                            fontWeight: "normal"
-                        }
-                    },
-                    xAxis: {
-                        title: {
-                            enabled: false
-                        },
-                        tickInterval: 2629746000,
-                        type: "datetime",
-                        lineColor: "#fff",
-                        tickColor: "#fff",
-                        min: chart4_last_month - 65743595833,
-                        max: chart4_last_month,
-                        labels: {
-                            style: {
-                                color: "#fff",
-                                fontSize: "11px"
-                            }
-                        }
-                    },
-                    yAxis: {
-                        title: {
-                            text: "",
-                            style: {
-                                color: "#fff",
-                                fontWeight: "normal",
-                                fontSize: "12px"
-                            }
-                        },
-                        lineColor: "#fff",
-                        tickColor: "#fff",
-                        tickInterval: 0.5,
-                        labels: {
-                            formatter: function () {
-                                return Highcharts.numberFormat(this.value, 1) + " %";
-                            },
-                            style: {
-                                color: "#fff",
-                                fontSize: "11px"
-                            }
-                        },
-                    },
-                    tooltip: {
-                        enabled: false
-                    },
-                    legend: {
-                        enabled: false
-                    },
-                    plotOptions: {
-                        line: {
-                            marker: {
-                                enabled: false
-                            },
-                            dataLabels: {
-                                enabled: true,
-                                color: "#FFF",
-                                useHTML: true,
-                                crop: false,
-                                overflow: false,
-                                formatter: function() {
-                                  var last  = this.series.data[this.series.data.length - 1];
-                                  if (this.point.category === last.category  && this.point.y === last.y) {
-                                    return ('<div class="MyDataLabelTooltip"><span class="datetext">' +  Highcharts.dateFormat("%b &apos;%y",this.point.x) + "</span><br />" +  Highcharts.numberFormat(this.point.y,1) + "%" + "</div>");
-                                  }
-                                  else {return};
-                                }
-                            }
-                        },
-                        series: {
-                            showInNavigator: true
-                        }
-                    },
-                    series: createdSeries
-                });
-            }
-
-            function loadDataAndBuildChart4() {
-                POST("https://statbank.hagstova.fo/api/v1/fo/H2/AM/AM02/al_pctkyn.px", {
-                    "query": [
-                        {
-                            "code": "measure",
-                            "selection": {
-                                "filter": "item",
-                                "values": [
-                                    "ALPCTJ"
-                                ]
-                            }
-                        },
-                        {
-                            "code": "month",
-                            "selection": {
-                                "filter": "item",
-                                "values": [
-                                    "1",
-                                    "2",
-                                    "3",
-                                    "4",
-                                    "5",
-                                    "6",
-                                    "7",
-                                    "8",
-                                    "9",
-                                    "10",
-                                    "11",
-                                    "12"
-                                ]
-                            }
-                        }
-                    ],
-                    "response": {
-                        "format": "json-stat"
-                    }
-                }, function(data) {
-                    chart4Data = data;
-                    drawChart4();
-                    startAnimatingChart4();
-                });
-            }
-
-
 
 
 
@@ -1456,7 +1172,7 @@
                 }, 25000);
             }
 
-            //Chart 8 specific functions
+            //Chart 3 specific functions
             function drawChart3() {
 
                 var jsonStatData = chart3Data;
@@ -1476,16 +1192,16 @@
                 var alifiskurdata = [];
 
                 for (var i = 0; i < fLen; i++) {
-                    var onnurfiskaslog = ds.Data({"commodity group": "48", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
-                    var toskur = ds.Data({"commodity group": "1", "year": ds.Dimension("year").id[i] }, false);
-                    var hysa = ds.Data({"commodity group": "9", "year": ds.Dimension("year").id[i] }, false);
-                    var upsi = ds.Data({"commodity group": "14", "year": ds.Dimension("year").id[i] }, false);
-                    var makrelur = ds.Data({"commodity group": "40", "year": ds.Dimension("year").id[i] }, false);
-                    var sild = ds.Data({"commodity group": "35", "year": ds.Dimension("year").id[i] }, false);
-                    var svartkjaftur = ds.Data({"commodity group": "30", "year": ds.Dimension("year").id[i] }, false);
-                    var laksur = ds.Data({"commodity group": "20", "year": ds.Dimension("year").id[i] }, false);
-                    var sil = ds.Data({"commodity group": "26", "year": ds.Dimension("year").id[i] }, false);
-                    var raekjur = ds.Data({"commodity group": "44", "year": ds.Dimension("year").id[i] }, false);
+                    var onnurfiskaslog = ds.Data({"commodity group": "080", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+                    var toskur = ds.Data({"commodity group": "001", "year": ds.Dimension("year").id[i] }, false);
+                    var hysa = ds.Data({"commodity group": "003", "year": ds.Dimension("year").id[i] }, false);
+                    var upsi = ds.Data({"commodity group": "002", "year": ds.Dimension("year").id[i] }, false);
+                    var makrelur = ds.Data({"commodity group": "051", "year": ds.Dimension("year").id[i] }, false);
+                    var sild = ds.Data({"commodity group": "050", "year": ds.Dimension("year").id[i] }, false);
+                    var svartkjaftur = ds.Data({"commodity group": "053", "year": ds.Dimension("year").id[i] }, false);
+                    var laksur = ds.Data({"commodity group": "011", "year": ds.Dimension("year").id[i] }, false);
+                    var sil = ds.Data({"commodity group": "030", "year": ds.Dimension("year").id[i] }, false);
+                    var raekjur = ds.Data({"commodity group": "067", "year": ds.Dimension("year").id[i] }, false);
 
                     for (var j = 0; j < onnurfiskaslog.length; j++) {
                         var month = m[j];
@@ -1680,7 +1396,7 @@
                             "selection": {
                                 "filter": "item",
                                 "values": [
-                                    "0"
+                                    "DKK"
                                 ]
                             }
                         },
@@ -1689,37 +1405,26 @@
                           "selection": {
                             "filter": "item",
                             "values": [
-                              "0",
-                              "1",
-                              "9",
-                              "14",
-                              "20",
-                              "26",
-                              "30",
-                              "35",
-                              "40",
-                              "44",
-                              "48"
+                              "TOT",
+                              "001",
+                              "003",
+                              "002",
+                              "011",
+                              "030",
+                              "053",
+                              "050",
+                              "051",
+                              "067",
+                              "080"
                             ]
                           }
                         },
                         {
                             "code": "month",
                             "selection": {
-                                "filter": "item",
+                                "filter": "all",
                                 "values": [
-                                    "1",
-                                    "2",
-                                    "3",
-                                    "4",
-                                    "5",
-                                    "6",
-                                    "7",
-                                    "8",
-                                    "9",
-                                    "10",
-                                    "11",
-                                    "12"
+                                    "*"
                                 ]
                             }
                         }
@@ -3712,7 +3417,7 @@
                 var jsonStatUtflutningurData= chart14bData;
 
 
-                //Extrat Data From JSON Stat
+                //Extract Data From JSON Stat
 
                 ds = JSONstat(jsonStatData).Dataset(0);
 
@@ -3982,24 +3687,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             //HELPER FUNCTION
             function POST(url, query, main) {
                 $.ajax({
@@ -4021,8 +3708,7 @@
                 loadDataAndBuildChart6();   
                 loadDataAndBuildChart7();   
                 loadDataAndBuildChart8();  
-                loadDataAndBuildChart9();                                                                          
-
+                loadDataAndBuildChart9();                                 
                 loadDataAndBuildChart11();
                 loadDataAndBuildChart12();   
                 loadDataAndBuildChart13();     

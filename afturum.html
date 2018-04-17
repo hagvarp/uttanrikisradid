@@ -935,9 +935,9 @@
                 var utflutningurdata = [];
 
                 for (var i = 0; i < fLen; i++) {
-                    var utflutningur = ds.Data({ "fish species and other groups": "TOT", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
-                    var adrarvorur = ds.Data({ "fish species and other groups": "91", "year": ds.Dimension("year").id[i] }, false).map(function(n) { return n !== "-" | null | n }).filter(function(n) { return n; });
-                    var skipflogfor = ds.Data({ "fish species and other groups": "90", "year": ds.Dimension("year").id[i] }, false).map(function(n) { return n !== "-" | null | n }).filter(function(n) { return n; });
+                    var utflutningur = ds.Data({ "commodity group": "TOT", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+                    var adrarvorur = ds.Data({ "commodity group": "091", "year": ds.Dimension("year").id[i] }, false).map(function(n) { return n !== "-" | null | n }).filter(function(n) { return n; });
+                    var skipflogfor = ds.Data({ "commodity group": "090", "year": ds.Dimension("year").id[i] }, false).map(function(n) { return n !== "-" | null | n }).filter(function(n) { return n; });
 
                     for (var j = 0; j < utflutningur.length; j++) {
                         var month = m[j];
@@ -1105,13 +1105,13 @@
                             }
                         },
                         {
-                            "code": "fish species and other groups",
+                            "code": "commodity group",
                             "selection": {
                                 "filter": "item",
                                 "values": [
                                     "TOT",
-                                    "91",
-                                    "90"
+                                    "091",
+                                    "090"
 
                                 ]
                             }

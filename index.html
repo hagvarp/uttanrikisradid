@@ -3618,24 +3618,15 @@
             function loadDataAndBuildChart14() {
                 POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_innlond.px", {
                     "query": [
-                        {
-                          "code": "country of origin",
-                          "selection": {
-                            "filter": "agg:ES28.agg",
-                            "values": [
-                              "ES-28"
-                            ]
-                          }
-                        },
-                        {
-                          "code": "year",
-                          "selection": {
-                            "filter": "all",
-                            "values": [
-                              "*"
-                            ]
-                          }
-                        }                       
+					    {
+					      "code": "country of origin",
+					      "selection": {
+					        "filter": "agg:EU28-fo.agg",
+					        "values": [
+					          "ES-28"
+					        ]
+					      }
+					    }                       
                     ],
                     "response": {
                         "format": "json-stat"
@@ -3655,7 +3646,7 @@
                         {
                           "code": "country of final destination",
                           "selection": {
-                            "filter": "agg:ES28.agg",
+                            "filter": "agg:EU28-fo.agg",
                             "values": [
                               "ES-28"
                             ]

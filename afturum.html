@@ -238,6 +238,7 @@ width: 800,
                         title: {
                             enabled: false
                         },
+                        tickAmount: 12,                        
                         type: "datetime",
                         min: chart1_last_month - 65743595833,
                         max: chart1_last_month,
@@ -534,7 +535,9 @@ width: 800,
                         title: {
                             enabled: false
                         },
-                        tickInterval: 2629746000,
+  dateTimeLabelFormats: {
+    year: "%Y"
+  },                        
                         type: "datetime",
                         lineColor: "#000",
                         tickColor: "#000",
@@ -582,8 +585,15 @@ width: 800,
                             },
                         },
                         series: {
-                            showInNavigator: true
+                            showInNavigator: true,
+                            dataGrouping:{
+                                approximation: "sum",
+                                enabled: true,
+                                units:[ ["year", [null]]],
+                                groupPixelWidth: 10
+                            },
                         }
+
                     },
                     series: [{
                     name: "Innflutningur",
@@ -769,7 +779,12 @@ width: 800,
                         title: {
                             enabled: false
                         },
-                        tickInterval: 2629746000,
+
+    
+                    tickAmount: 12,
+                          dateTimeLabelFormats: {
+                            year: "%Y"
+                          },                        
                         type: "datetime",
                         lineColor: "#000",
                         tickColor: "#000",
@@ -818,6 +833,7 @@ width: 800,
 
                         series: {
                             dataGrouping:{
+                                approximation: "sum",
                                 enabled: true,
                                 units:[ ["year", [null]]],
                                 groupPixelWidth: 30
@@ -1020,8 +1036,11 @@ width: 800,
                         title: {
                             enabled: false
                         },
-                        tickInterval: 2629746000,
+                        tickAmount: 12,
                         type: "datetime",
+                          dateTimeLabelFormats: {
+                            year: "%Y"
+                          },                        
                         lineColor: "#000",
                         tickColor: "#000",
                         min: chart2_last_month - 65743595833,
@@ -1068,6 +1087,13 @@ width: 800,
                             }
                         },
                         series: {
+                            dataGrouping:{
+                                approximation: "sum",
+                                enabled: true,
+                                units:[ ["year", [null]]],
+                                groupPixelWidth: 10
+                            },
+
                             showInNavigator: true
                         }
                     },
@@ -1284,6 +1310,7 @@ width: 800,
                         }
                     },
                     xAxis: {
+                        tickAmount: 12,                        
                         title: {
                             enabled: false
                         },
@@ -1335,6 +1362,7 @@ width: 800,
 
                         series: {
                             dataGrouping:{
+                                approximation: "sum",
                                 enabled: true,
                                 units:[ ["year", [null]]],
                                 groupPixelWidth: 10

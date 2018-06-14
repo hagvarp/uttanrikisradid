@@ -573,6 +573,9 @@
                     legend: {
                         enabled: false
                     },
+
+
+
                     plotOptions: {
                         line: {
                             marker: {
@@ -594,7 +597,12 @@
                             }
                         },
                         series: {
-                            showInNavigator: true
+                            showInNavigator: true,
+                            dataGrouping:{
+                                enabled: true,
+                                approximation: "sum",
+                                units:[ ["year", null]]
+                            }                            
                         }
                     },
                     series: createdSeries
@@ -832,6 +840,7 @@
 
                         series: {
                             dataGrouping:{
+                            	approximation: "sum",
                                 enabled: true,
                                 units:[ ["year", [null]]],
                                 groupPixelWidth: 30
@@ -1073,7 +1082,12 @@
                             }
                         },
                         series: {
-                            showInNavigator: true
+                            showInNavigator: true,
+                            dataGrouping:{
+                                enabled: true,
+                                approximation: "sum",
+                                units:[ ["year", null]]
+                            }                            
                         }
                     },
                     series: createdSeries
@@ -1377,6 +1391,7 @@
 
                         series: {
                             dataGrouping:{
+                            	approximation: "sum",
                                 enabled: true,
                                 units:[ ["year", [null]]],
                                 groupPixelWidth: 10

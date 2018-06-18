@@ -1806,6 +1806,8 @@ width: 800,
 
 
 
+
+
 //---------------------------------------------------------
 //                                CHART 6
 //---------------------------------------------------------
@@ -3694,7 +3696,7 @@ width: 800,
                         {
                           "code": "country of origin",
                           "selection": {
-                            "filter": "agg:ES28.agg",
+                            "filter": "agg:EU28-fo.agg",
                             "values": [
                               "ES-28"
                             ]
@@ -3728,7 +3730,7 @@ width: 800,
                         {
                           "code": "country of final destination",
                           "selection": {
-                            "filter": "agg:ES28.agg",
+                            "filter": "agg:EU28-fo.agg",
                             "values": [
                               "ES-28"
                             ]
@@ -3763,6 +3765,673 @@ width: 800,
 
 
 
+//---------------------------------------------------------
+//                                CHART 15
+//---------------------------------------------------------
+
+            var chart15;
+            var chart15Data;
+            var chart15CreatedSeries;
+            var chart15_last_month;
+            var chart15Timeout0;
+            var chart15Timeout1;
+            var chart15Timeout2;
+            var chart15Timeout3;
+            var chart15Timeout4;
+
+            function startAnimatingChart15() {
+                clearTimeout(chart15Timeout0);
+                clearTimeout(chart15Timeout1);
+                clearTimeout(chart15Timeout2);
+                clearTimeout(chart15Timeout3);
+                clearTimeout(chart15Timeout4);
+
+                drawChart15();
+
+                chart15Timeout0 = setTimeout(function() {
+                    chart15.addSeries(chart15CreatedSeries[0]);
+                }, 100);
+                chart15Timeout1 = setTimeout(function() {
+                    chart15.addSeries(chart15CreatedSeries[1]);
+                }, 3000);
+                chart15Timeout2 = setTimeout(function() {
+                    chart15.addSeries(chart15CreatedSeries[2]);
+                }, 5000);
+                chart15Timeout3 = setTimeout(function() {
+                    chart15.addSeries(chart15CreatedSeries[3]);
+                }, 7000);
+
+                chart15Timeout4 =setTimeout(function () {
+                    chart15.update({xAxis: {
+                        min: null,
+                        max: null,
+                    }});
+                }, 25000);
+            }
+
+            //Chart 3 specific functions
+            function drawChart15() {
+
+                var jsonStatData = chart15Data;
+                //Extrat Data From JSON Stat
+                ds = JSONstat(jsonStatData).Dataset(0);
+                t = ds.Dimension("year").length - 1;
+                year = ds.Dimension("year").id;
+                var fLen = year.length;
+                m = ds.Dimension("month").id;
+
+
+            //Format Data
+
+                var onnurfiskaslogdata = [];
+                var toskurhysaupsidata = [];
+                var makrelursildsvartkjafturdata = [];
+                var alifiskurdata = [];
+
+                for (var i = 0; i < fLen; i++) {
+
+                    var toskur = ds.Data({"fish species and other groups": "1", "year": ds.Dimension("year").id[i] }, false);
+                    var hysa = ds.Data({"fish species and other groups": "3", "year": ds.Dimension("year").id[i] }, false);
+                    var upsi = ds.Data({"fish species and other groups": "2", "year": ds.Dimension("year").id[i] }, false);
+                    var makrelur = ds.Data({"fish species and other groups": "51", "year": ds.Dimension("year").id[i] }, false);
+                    var sild = ds.Data({"fish species and other groups": "50", "year": ds.Dimension("year").id[i] }, false);
+                    var svartkjaftur = ds.Data({"fish species and other groups": "53", "year": ds.Dimension("year").id[i] }, false);
+                    var laksur = ds.Data({"fish species and other groups": "11", "year": ds.Dimension("year").id[i] }, false);
+                    var sil = ds.Data({"fish species and other groups": "30", "year": ds.Dimension("year").id[i] }, false);
+                    
+                    var skipflogfor = ds.Data({"fish species and other groups": "90", "year": ds.Dimension("year").id[i] }, false);
+                    var adrarvorur = ds.Data({"fish species and other groups": "91", "year": ds.Dimension("year").id[i] }, false);
+                    var totalutflutning = ds.Data({"fish species and other groups": "TOT", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+
+
+                    for (var j = 0; j < totalutflutning.length; j++) {
+                        var month = m[j];
+                        if(month.length == 1) {
+                            month = "0" + month;
+                        }
+                        onnurfiskaslogdata.push([Date.parse(year[i] + "-" + month), (totalutflutning[j] - (skipflogfor[j] + adrarvorur[j] + toskur[j] + hysa[j] + upsi[j] + laksur[j] + sil[j] + makrelur[j] + sild[j] + svartkjaftur[j] ))*0.001]);
+                        
+                        toskurhysaupsidata.push([Date.parse(year[i] + "-" + month), (toskur[j] + hysa[j] + upsi[j])*0.001]);
+                        alifiskurdata.push([Date.parse(year[i] + "-" + month), (laksur[j] + sil[j])*0.001]);
+                        makrelursildsvartkjafturdata.push([Date.parse(year[i] + "-" + month), (makrelur[j] + sild[j] + svartkjaftur[j])*0.001]);
+                    }
+                }
+
+
+
+
+                var chart15_last_month = onnurfiskaslogdata[onnurfiskaslogdata.length - 1];
+                chart15_last_month = chart15_last_month[0];
+
+                //Build Series
+                var createdSeries = 0;
+                chart15CreatedSeries = createdSeries;
+
+
+                //Build Title
+                var title = ds.label;
+
+                //Build subtitle
+                var subtitle = ds.source;
+
+                //Build Tooltip
+                var tooltipFunction = function () {
+                    var s = "<b>" + Highcharts.dateFormat("%Y-%b", this.x) + "</b>";
+                    $.each(this.points,
+                        function (i, point) {
+                            s += "<br/>" + point.series.name + ": " + Highcharts.numberFormat(point.y, 0.0, ",", ".");
+                        });
+
+                    return s;
+                }
+
+                //Build Chart
+                $("#chart15").highcharts({
+                    credits: {
+                        enabled: false
+                    },
+                    chart: {
+                        width: 800,
+                        backgroundColor: "rgba(255, 255, 255, 0)",
+                        borderWidth: 1,
+                        renderTo: "container",
+                    },
+                    rangeSelector: {
+                        enabled: false
+                    },
+                    credits: {
+                        enabled: true,
+                        href: "http://www.hagstova.fo",
+                        text: "Hagstova Føroya"
+                    }, 
+                    exporting: {
+                        enabled: true
+                    },
+
+                    navigator: {
+                        enabled: true
+                    },
+                    title: {
+                        text: "Útflutningur av fiskavørum til Russlands",
+                        y: 30
+                    },
+                    subtitle: {
+                        text: 'í mió. kr.',
+                        y: 45,                        
+                    },                    
+                    legend: {
+                        y: 60,  
+                        align: "center",
+                        verticalAlign: "top",
+
+                        itemStyle: {
+                            color: "#000",
+                            fontWeight: "normal"
+                        }
+                    },
+                    xAxis: {
+                        tickAmount: 12,                        
+                        title: {
+                            enabled: false
+                        },
+                        type: "datetime",
+                        min: chart15_last_month - 65743595833,
+                        max: chart15_last_month,
+                        labels: {
+                            style: {
+                                color: "#000",
+                                fontSize: "11px"
+                            }
+                        },
+                        showLastLabel: true,
+
+                    },
+                    yAxis: {
+                        title: {
+                            text: "",
+                            style: {
+                                color: "#000",
+                                fontWeight: "normal",
+                                fontSize: "12px"
+                            }
+                        },
+                        min: 0,
+                        lineColor: "#000",
+                        tickColor: "#000",
+                        labels: {
+                            formatter: function () {
+                                return Highcharts.numberFormat(this.value, 0);
+                            },
+                            style: {
+                                color: "#000",
+                                font: "11px"
+                            }
+                        },
+                    },
+                    tooltip: {
+                        enabled: true
+                    },
+                    plotOptions: {
+                        line: {
+                            marker: {
+                                enabled: false
+                            },
+                            lineWidth: 4
+
+                        },
+
+                        series: {
+                            dataGrouping:{
+                                approximation: "sum",
+                                enabled: true,
+                                units:[ ["year", [null]]],
+                                groupPixelWidth: 10
+                            },
+                        },
+
+                    },
+                    series: [
+                {
+                    name: "Toskur, hýsa, upsi",
+                    data: toskurhysaupsidata,
+                    color: "#9b1212",
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                    legendIndex:1,
+                    index: 3
+                },
+                {
+                    name: "Makrelur, sild, svartkjaftur",
+                    data: makrelursildsvartkjafturdata,
+                    color: "#f7b538",
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                    legendIndex:2,
+                    index: 2
+                },
+                {
+                    name: "Alifiskur",
+                    data: alifiskurdata,
+                    color: "#fb6107",
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                    legendIndex:3,
+                    index: 1
+                },
+                {
+                    name: "Onnur fiskasløg",
+                    data: onnurfiskaslogdata,
+                    color: "#00a6ed",
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                    legendIndex:4,
+                    index: 0
+                }
+                ]
+                });
+            }
+
+            function loadDataAndBuildChart15() {
+                POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_utfisk.px", {
+                    "query": [
+                        {
+                            "code": "unit",
+                            "selection": {
+                                "filter": "item",
+                                "values": [
+                                    "DKK"
+                                ]
+                            }
+                        },
+                        {
+                          "code": "fish species and other groups",
+                          "selection": {
+                            "filter": "item",
+                            "values": [
+                              "TOT",
+                              "1",
+                              "3",
+                              "2",
+                              "11",
+                              "30",
+                              "53",
+                              "50",
+                              "51",
+                              "90",
+                              "91"
+                            ]
+                          }
+                        },
+                        {
+                          "code": "country of final destination",
+                          "selection": {
+                            "filter": "item",
+                            "values": [
+                              "075"
+                            ]
+                          }
+                        },                        
+                        {
+                            "code": "month",
+                            "selection": {
+                                "filter": "all",
+                                "values": [
+                                    "*"
+                                ]
+                            }
+                        }
+                    ],
+                    "response": {
+                        "format": "json-stat"
+
+                    }
+                },function(data) {
+                    chart15Data = data;
+                    drawChart15();
+                    startAnimatingChart15();
+                } );
+            }
+
+
+
+
+
+
+
+//---------------------------------------------------------
+//                                CHART 16
+//---------------------------------------------------------
+
+            var chart16;
+            var chart16Data;
+            var chart16CreatedSeries;
+            var chart16_last_month;
+            var chart16Timeout0;
+            var chart16Timeout1;
+            var chart16Timeout2;
+            var chart16Timeout3;
+            var chart16Timeout4;
+
+            function startAnimatingChart16() {
+                clearTimeout(chart16Timeout0);
+                clearTimeout(chart16Timeout1);
+                clearTimeout(chart16Timeout2);
+                clearTimeout(chart16Timeout3);
+                clearTimeout(chart16Timeout4);
+
+                drawChart16();
+
+                chart16Timeout0 = setTimeout(function() {
+                    chart16.addSeries(chart16CreatedSeries[0]);
+                }, 100);
+                chart16Timeout1 = setTimeout(function() {
+                    chart16.addSeries(chart16CreatedSeries[1]);
+                }, 3000);
+                chart16Timeout2 = setTimeout(function() {
+                    chart16.addSeries(chart16CreatedSeries[2]);
+                }, 5000);
+                chart16Timeout3 = setTimeout(function() {
+                    chart16.addSeries(chart16CreatedSeries[3]);
+                }, 7000);
+
+                chart16Timeout4 =setTimeout(function () {
+                    chart16.update({xAxis: {
+                        min: null,
+                        max: null,
+                    }});
+                }, 25000);
+            }
+
+            //Chart 3 specific functions
+            function drawChart16() {
+
+                var jsonStatData = chart16Data;
+                //Extrat Data From JSON Stat
+                ds = JSONstat(jsonStatData).Dataset(0);
+                t = ds.Dimension("year").length - 1;
+                year = ds.Dimension("year").id;
+                var fLen = year.length;
+                m = ds.Dimension("month").id;
+
+
+            //Format Data
+
+                var onnurfiskaslogdata = [];
+                var toskurhysaupsidata = [];
+                var makrelursildsvartkjafturdata = [];
+                var alifiskurdata = [];
+
+                for (var i = 0; i < fLen; i++) {
+
+                    var toskur = ds.Data({"fish species and other groups": "1", "year": ds.Dimension("year").id[i] }, false);
+                    var hysa = ds.Data({"fish species and other groups": "3", "year": ds.Dimension("year").id[i] }, false);
+                    var upsi = ds.Data({"fish species and other groups": "2", "year": ds.Dimension("year").id[i] }, false);
+                    var makrelur = ds.Data({"fish species and other groups": "51", "year": ds.Dimension("year").id[i] }, false);
+                    var sild = ds.Data({"fish species and other groups": "50", "year": ds.Dimension("year").id[i] }, false);
+                    var svartkjaftur = ds.Data({"fish species and other groups": "53", "year": ds.Dimension("year").id[i] }, false);
+                    var laksur = ds.Data({"fish species and other groups": "11", "year": ds.Dimension("year").id[i] }, false);
+                    var sil = ds.Data({"fish species and other groups": "30", "year": ds.Dimension("year").id[i] }, false);
+                    
+                    var skipflogfor = ds.Data({"fish species and other groups": "90", "year": ds.Dimension("year").id[i] }, false);
+                    var adrarvorur = ds.Data({"fish species and other groups": "91", "year": ds.Dimension("year").id[i] }, false);
+                    var totalutflutning = ds.Data({"fish species and other groups": "TOT", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+
+
+                    for (var j = 0; j < totalutflutning.length; j++) {
+                        var month = m[j];
+                        if(month.length == 1) {
+                            month = "0" + month;
+                        }
+                        onnurfiskaslogdata.push([Date.parse(year[i] + "-" + month), (totalutflutning[j] - (skipflogfor[j] + adrarvorur[j] + toskur[j] + hysa[j] + upsi[j] + laksur[j] + sil[j] + makrelur[j] + sild[j] + svartkjaftur[j] ))*0.001]);
+                        
+                        toskurhysaupsidata.push([Date.parse(year[i] + "-" + month), (toskur[j] + hysa[j] + upsi[j])*0.001]);
+                        alifiskurdata.push([Date.parse(year[i] + "-" + month), (laksur[j] + sil[j])*0.001]);
+                        makrelursildsvartkjafturdata.push([Date.parse(year[i] + "-" + month), (makrelur[j] + sild[j] + svartkjaftur[j])*0.001]);
+                    }
+                }
+
+
+
+
+                var chart16_last_month = onnurfiskaslogdata[onnurfiskaslogdata.length - 1];
+                chart16_last_month = chart16_last_month[0];
+
+                //Build Series
+                var createdSeries = 0;
+                chart16CreatedSeries = createdSeries;
+
+
+                //Build Title
+                var title = ds.label;
+
+                //Build subtitle
+                var subtitle = ds.source;
+
+                //Build Tooltip
+                var tooltipFunction = function () {
+                    var s = "<b>" + Highcharts.dateFormat("%Y-%b", this.x) + "</b>";
+                    $.each(this.points,
+                        function (i, point) {
+                            s += "<br/>" + point.series.name + ": " + Highcharts.numberFormat(point.y, 0.0, ",", ".");
+                        });
+
+                    return s;
+                }
+
+                //Build Chart
+                $("#chart16").highcharts({
+                    credits: {
+                        enabled: false
+                    },
+                    chart: {
+                        width: 800,
+                        backgroundColor: "rgba(255, 255, 255, 0)",
+                        borderWidth: 1,
+                        renderTo: "container",
+                    },
+                    rangeSelector: {
+                        enabled: false
+                    },
+                    credits: {
+                        enabled: true,
+                        href: "http://www.hagstova.fo",
+                        text: "Hagstova Føroya"
+                    }, 
+                    exporting: {
+                        enabled: true
+                    },
+
+                    navigator: {
+                        enabled: true
+                    },
+                    title: {
+                        text: "Útflutningur av fiskavørum til USA",
+                        y: 30
+                    },
+                    subtitle: {
+                        text: 'í mió. kr.',
+                        y: 45,                        
+                    },                    
+                    legend: {
+                        y: 60,  
+                        align: "center",
+                        verticalAlign: "top",
+
+                        itemStyle: {
+                            color: "#000",
+                            fontWeight: "normal"
+                        }
+                    },
+                    xAxis: {
+                        tickAmount: 12,                        
+                        title: {
+                            enabled: false
+                        },
+                        type: "datetime",
+                        min: chart16_last_month - 65743595833,
+                        max: chart16_last_month,
+                        labels: {
+                            style: {
+                                color: "#000",
+                                fontSize: "11px"
+                            }
+                        },
+                        showLastLabel: true,
+
+                    },
+                    yAxis: {
+                        title: {
+                            text: "",
+                            style: {
+                                color: "#000",
+                                fontWeight: "normal",
+                                fontSize: "12px"
+                            }
+                        },
+                        min: 0,
+                        lineColor: "#000",
+                        tickColor: "#000",
+                        labels: {
+                            formatter: function () {
+                                return Highcharts.numberFormat(this.value, 0);
+                            },
+                            style: {
+                                color: "#000",
+                                font: "11px"
+                            }
+                        },
+                    },
+                    tooltip: {
+                        enabled: true
+                    },
+                    plotOptions: {
+                        line: {
+                            marker: {
+                                enabled: false
+                            },
+                            lineWidth: 4
+
+                        },
+
+                        series: {
+                            dataGrouping:{
+                                approximation: "sum",
+                                enabled: true,
+                                units:[ ["year", [null]]],
+                                groupPixelWidth: 10
+                            },
+                        },
+
+                    },
+                    series: [
+                {
+                    name: "Toskur, hýsa, upsi",
+                    data: toskurhysaupsidata,
+                    color: "#9b1212",
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                    legendIndex:1,
+                    index: 3
+                },
+                {
+                    name: "Makrelur, sild, svartkjaftur",
+                    data: makrelursildsvartkjafturdata,
+                    color: "#f7b538",
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                    legendIndex:2,
+                    index: 2
+                },
+                {
+                    name: "Alifiskur",
+                    data: alifiskurdata,
+                    color: "#fb6107",
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                    legendIndex:3,
+                    index: 1
+                },
+                {
+                    name: "Onnur fiskasløg",
+                    data: onnurfiskaslogdata,
+                    color: "#00a6ed",
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                    legendIndex:4,
+                    index: 0
+                }
+                ]
+                });
+            }
+
+            function loadDataAndBuildChart16() {
+                POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_utfisk.px", {
+                    "query": [
+                        {
+                            "code": "unit",
+                            "selection": {
+                                "filter": "item",
+                                "values": [
+                                    "DKK"
+                                ]
+                            }
+                        },
+                        {
+                          "code": "fish species and other groups",
+                          "selection": {
+                            "filter": "item",
+                            "values": [
+                              "TOT",
+                              "1",
+                              "3",
+                              "2",
+                              "11",
+                              "30",
+                              "53",
+                              "50",
+                              "51",
+                              "90",
+                              "91"
+                            ]
+                          }
+                        },
+                        {
+                          "code": "country of final destination",
+                          "selection": {
+                            "filter": "item",
+                            "values": [
+                              "400"
+                            ]
+                          }
+                        },                        
+                        {
+                            "code": "month",
+                            "selection": {
+                                "filter": "all",
+                                "values": [
+                                    "*"
+                                ]
+                            }
+                        }
+                    ],
+                    "response": {
+                        "format": "json-stat"
+
+                    }
+                },function(data) {
+                    chart16Data = data;
+                    drawChart16();
+                    startAnimatingChart16();
+                } );
+            }
 
 
 
@@ -3772,6 +4441,1007 @@ width: 800,
 
 
 
+//---------------------------------------------------------
+//                                CHART 17
+//---------------------------------------------------------
+
+            var chart17;
+            var chart17Data;
+            var chart17CreatedSeries;
+            var chart17_last_month;
+            var chart17Timeout0;
+            var chart17Timeout1;
+            var chart17Timeout2;
+            var chart17Timeout3;
+            var chart17Timeout4;
+
+            function startAnimatingChart17() {
+                clearTimeout(chart17Timeout0);
+                clearTimeout(chart17Timeout1);
+                clearTimeout(chart17Timeout2);
+                clearTimeout(chart17Timeout3);
+                clearTimeout(chart17Timeout4);
+
+                drawChart17();
+
+                chart17Timeout0 = setTimeout(function() {
+                    chart17.addSeries(chart17CreatedSeries[0]);
+                }, 100);
+                chart17Timeout1 = setTimeout(function() {
+                    chart17.addSeries(chart17CreatedSeries[1]);
+                }, 3000);
+                chart17Timeout2 = setTimeout(function() {
+                    chart17.addSeries(chart17CreatedSeries[2]);
+                }, 5000);
+                chart17Timeout3 = setTimeout(function() {
+                    chart17.addSeries(chart17CreatedSeries[3]);
+                }, 7000);
+
+                chart17Timeout4 =setTimeout(function () {
+                    chart17.update({xAxis: {
+                        min: null,
+                        max: null,
+                    }});
+                }, 25000);
+            }
+
+            //Chart 3 specific functions
+            function drawChart17() {
+
+                var jsonStatData = chart17Data;
+                //Extrat Data From JSON Stat
+                ds = JSONstat(jsonStatData).Dataset(0);
+                t = ds.Dimension("year").length - 1;
+                year = ds.Dimension("year").id;
+                var fLen = year.length;
+                m = ds.Dimension("month").id;
+
+
+            //Format Data
+
+                var onnurfiskaslogdata = [];
+                var toskurhysaupsidata = [];
+                var makrelursildsvartkjafturdata = [];
+                var alifiskurdata = [];
+
+                for (var i = 0; i < fLen; i++) {
+
+                    var toskur = ds.Data({"fish species and other groups": "1", "year": ds.Dimension("year").id[i] }, false);
+                    var hysa = ds.Data({"fish species and other groups": "3", "year": ds.Dimension("year").id[i] }, false);
+                    var upsi = ds.Data({"fish species and other groups": "2", "year": ds.Dimension("year").id[i] }, false);
+                    var makrelur = ds.Data({"fish species and other groups": "51", "year": ds.Dimension("year").id[i] }, false);
+                    var sild = ds.Data({"fish species and other groups": "50", "year": ds.Dimension("year").id[i] }, false);
+                    var svartkjaftur = ds.Data({"fish species and other groups": "53", "year": ds.Dimension("year").id[i] }, false);
+                    var laksur = ds.Data({"fish species and other groups": "11", "year": ds.Dimension("year").id[i] }, false);
+                    var sil = ds.Data({"fish species and other groups": "30", "year": ds.Dimension("year").id[i] }, false);
+                    
+                    var skipflogfor = ds.Data({"fish species and other groups": "90", "year": ds.Dimension("year").id[i] }, false);
+                    var adrarvorur = ds.Data({"fish species and other groups": "91", "year": ds.Dimension("year").id[i] }, false);
+                    var totalutflutning = ds.Data({"fish species and other groups": "TOT", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+
+
+                    for (var j = 0; j < totalutflutning.length; j++) {
+                        var month = m[j];
+                        if(month.length == 1) {
+                            month = "0" + month;
+                        }
+                        onnurfiskaslogdata.push([Date.parse(year[i] + "-" + month), (totalutflutning[j] - (skipflogfor[j] + adrarvorur[j] + toskur[j] + hysa[j] + upsi[j] + laksur[j] + sil[j] + makrelur[j] + sild[j] + svartkjaftur[j] ))*0.001]);
+                        
+                        toskurhysaupsidata.push([Date.parse(year[i] + "-" + month), (toskur[j] + hysa[j] + upsi[j])*0.001]);
+                        alifiskurdata.push([Date.parse(year[i] + "-" + month), (laksur[j] + sil[j])*0.001]);
+                        makrelursildsvartkjafturdata.push([Date.parse(year[i] + "-" + month), (makrelur[j] + sild[j] + svartkjaftur[j])*0.001]);
+                    }
+                }
+
+
+
+
+                var chart17_last_month = onnurfiskaslogdata[onnurfiskaslogdata.length - 1];
+                chart17_last_month = chart17_last_month[0];
+
+                //Build Series
+                var createdSeries = 0;
+                chart17CreatedSeries = createdSeries;
+
+
+                //Build Title
+                var title = ds.label;
+
+                //Build subtitle
+                var subtitle = ds.source;
+
+                //Build Tooltip
+                var tooltipFunction = function () {
+                    var s = "<b>" + Highcharts.dateFormat("%Y-%b", this.x) + "</b>";
+                    $.each(this.points,
+                        function (i, point) {
+                            s += "<br/>" + point.series.name + ": " + Highcharts.numberFormat(point.y, 0.0, ",", ".");
+                        });
+
+                    return s;
+                }
+
+                //Build Chart
+                $("#chart17").highcharts({
+                    credits: {
+                        enabled: false
+                    },
+                    chart: {
+                        width: 800,
+                        backgroundColor: "rgba(255, 255, 255, 0)",
+                        borderWidth: 1,
+                        renderTo: "container",
+                    },
+                    rangeSelector: {
+                        enabled: false
+                    },
+                    credits: {
+                        enabled: true,
+                        href: "http://www.hagstova.fo",
+                        text: "Hagstova Føroya"
+                    }, 
+                    exporting: {
+                        enabled: true
+                    },
+
+                    navigator: {
+                        enabled: true
+                    },
+                    title: {
+                        text: "Útflutningur av fiskavørum til Stóra Bretland",
+                        y: 30
+                    },
+                    subtitle: {
+                        text: 'í mió. kr.',
+                        y: 45,                        
+                    },                    
+                    legend: {
+                        y: 60,  
+                        align: "center",
+                        verticalAlign: "top",
+
+                        itemStyle: {
+                            color: "#000",
+                            fontWeight: "normal"
+                        }
+                    },
+                    xAxis: {
+                        tickAmount: 12,                        
+                        title: {
+                            enabled: false
+                        },
+                        type: "datetime",
+                        min: chart17_last_month - 65743595833,
+                        max: chart17_last_month,
+                        labels: {
+                            style: {
+                                color: "#000",
+                                fontSize: "11px"
+                            }
+                        },
+                        showLastLabel: true,
+
+                    },
+                    yAxis: {
+                        title: {
+                            text: "",
+                            style: {
+                                color: "#000",
+                                fontWeight: "normal",
+                                fontSize: "12px"
+                            }
+                        },
+                        min: 0,
+                        lineColor: "#000",
+                        tickColor: "#000",
+                        labels: {
+                            formatter: function () {
+                                return Highcharts.numberFormat(this.value, 0);
+                            },
+                            style: {
+                                color: "#000",
+                                font: "11px"
+                            }
+                        },
+                    },
+                    tooltip: {
+                        enabled: true
+                    },
+                    plotOptions: {
+                        line: {
+                            marker: {
+                                enabled: false
+                            },
+                            lineWidth: 4
+
+                        },
+
+                        series: {
+                            dataGrouping:{
+                                approximation: "sum",
+                                enabled: true,
+                                units:[ ["year", [null]]],
+                                groupPixelWidth: 10
+                            },
+                        },
+
+                    },
+                    series: [
+                {
+                    name: "Toskur, hýsa, upsi",
+                    data: toskurhysaupsidata,
+                    color: "#9b1212",
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                    legendIndex:1,
+                    index: 3
+                },
+                {
+                    name: "Makrelur, sild, svartkjaftur",
+                    data: makrelursildsvartkjafturdata,
+                    color: "#f7b538",
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                    legendIndex:2,
+                    index: 2
+                },
+                {
+                    name: "Alifiskur",
+                    data: alifiskurdata,
+                    color: "#fb6107",
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                    legendIndex:3,
+                    index: 1
+                },
+                {
+                    name: "Onnur fiskasløg",
+                    data: onnurfiskaslogdata,
+                    color: "#00a6ed",
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                    legendIndex:4,
+                    index: 0
+                }
+                ]
+                });
+            }
+
+            function loadDataAndBuildChart17() {
+                POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_utfisk.px", {
+                    "query": [
+                        {
+                            "code": "unit",
+                            "selection": {
+                                "filter": "item",
+                                "values": [
+                                    "DKK"
+                                ]
+                            }
+                        },
+                        {
+                          "code": "fish species and other groups",
+                          "selection": {
+                            "filter": "item",
+                            "values": [
+                              "TOT",
+                              "1",
+                              "3",
+                              "2",
+                              "11",
+                              "30",
+                              "53",
+                              "50",
+                              "51",
+                              "90",
+                              "91"
+                            ]
+                          }
+                        },
+                        {
+                          "code": "country of final destination",
+                          "selection": {
+                            "filter": "item",
+                            "values": [
+                              "006"
+                            ]
+                          }
+                        },                        
+                        {
+                            "code": "month",
+                            "selection": {
+                                "filter": "all",
+                                "values": [
+                                    "*"
+                                ]
+                            }
+                        }
+                    ],
+                    "response": {
+                        "format": "json-stat"
+
+                    }
+                },function(data) {
+                    chart17Data = data;
+                    drawChart17();
+                    startAnimatingChart17();
+                } );
+            }
+
+
+
+
+
+
+
+//---------------------------------------------------------
+//                                CHART 18
+//---------------------------------------------------------
+
+            var chart18;
+            var chart18Data;
+            var chart18CreatedSeries;
+            var chart18_last_month;
+            var chart18Timeout0;
+            var chart18Timeout1;
+            var chart18Timeout2;
+            var chart18Timeout3;
+            var chart18Timeout4;
+
+            function startAnimatingChart18() {
+                clearTimeout(chart18Timeout0);
+                clearTimeout(chart18Timeout1);
+                clearTimeout(chart18Timeout2);
+                clearTimeout(chart18Timeout3);
+                clearTimeout(chart18Timeout4);
+
+                drawChart18();
+
+                chart18Timeout0 = setTimeout(function() {
+                    chart18.addSeries(chart18CreatedSeries[0]);
+                }, 100);
+                chart18Timeout1 = setTimeout(function() {
+                    chart18.addSeries(chart18CreatedSeries[1]);
+                }, 3000);
+                chart18Timeout2 = setTimeout(function() {
+                    chart18.addSeries(chart18CreatedSeries[2]);
+                }, 5000);
+                chart18Timeout3 = setTimeout(function() {
+                    chart18.addSeries(chart18CreatedSeries[3]);
+                }, 7000);
+
+                chart18Timeout4 =setTimeout(function () {
+                    chart18.update({xAxis: {
+                        min: null,
+                        max: null,
+                    }});
+                }, 25000);
+            }
+
+            //Chart 3 specific functions
+            function drawChart18() {
+
+                var jsonStatData = chart18Data;
+                //Extrat Data From JSON Stat
+                ds = JSONstat(jsonStatData).Dataset(0);
+                t = ds.Dimension("year").length - 1;
+                year = ds.Dimension("year").id;
+                var fLen = year.length;
+                m = ds.Dimension("month").id;
+
+
+            //Format Data
+
+                var onnurfiskaslogdata = [];
+                var toskurhysaupsidata = [];
+                var makrelursildsvartkjafturdata = [];
+                var alifiskurdata = [];
+
+                for (var i = 0; i < fLen; i++) {
+
+                    var toskur = ds.Data({"fish species and other groups": "1", "year": ds.Dimension("year").id[i] }, false);
+                    var hysa = ds.Data({"fish species and other groups": "3", "year": ds.Dimension("year").id[i] }, false);
+                    var upsi = ds.Data({"fish species and other groups": "2", "year": ds.Dimension("year").id[i] }, false);
+                    var makrelur = ds.Data({"fish species and other groups": "51", "year": ds.Dimension("year").id[i] }, false);
+                    var sild = ds.Data({"fish species and other groups": "50", "year": ds.Dimension("year").id[i] }, false);
+                    var svartkjaftur = ds.Data({"fish species and other groups": "53", "year": ds.Dimension("year").id[i] }, false);
+                    var laksur = ds.Data({"fish species and other groups": "11", "year": ds.Dimension("year").id[i] }, false);
+                    var sil = ds.Data({"fish species and other groups": "30", "year": ds.Dimension("year").id[i] }, false);
+                    
+                    var skipflogfor = ds.Data({"fish species and other groups": "90", "year": ds.Dimension("year").id[i] }, false);
+                    var adrarvorur = ds.Data({"fish species and other groups": "91", "year": ds.Dimension("year").id[i] }, false);
+                    var totalutflutning = ds.Data({"fish species and other groups": "TOT", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+
+
+                    for (var j = 0; j < totalutflutning.length; j++) {
+                        var month = m[j];
+                        if(month.length == 1) {
+                            month = "0" + month;
+                        }
+                        onnurfiskaslogdata.push([Date.parse(year[i] + "-" + month), (totalutflutning[j] - (skipflogfor[j] + adrarvorur[j] + toskur[j] + hysa[j] + upsi[j] + laksur[j] + sil[j] + makrelur[j] + sild[j] + svartkjaftur[j] ))*0.001]);
+                        
+                        toskurhysaupsidata.push([Date.parse(year[i] + "-" + month), (toskur[j] + hysa[j] + upsi[j])*0.001]);
+                        alifiskurdata.push([Date.parse(year[i] + "-" + month), (laksur[j] + sil[j])*0.001]);
+                        makrelursildsvartkjafturdata.push([Date.parse(year[i] + "-" + month), (makrelur[j] + sild[j] + svartkjaftur[j])*0.001]);
+                    }
+                }
+
+
+
+
+                var chart18_last_month = onnurfiskaslogdata[onnurfiskaslogdata.length - 1];
+                chart18_last_month = chart18_last_month[0];
+
+                //Build Series
+                var createdSeries = 0;
+                chart18CreatedSeries = createdSeries;
+
+
+                //Build Title
+                var title = ds.label;
+
+                //Build subtitle
+                var subtitle = ds.source;
+
+                //Build Tooltip
+                var tooltipFunction = function () {
+                    var s = "<b>" + Highcharts.dateFormat("%Y-%b", this.x) + "</b>";
+                    $.each(this.points,
+                        function (i, point) {
+                            s += "<br/>" + point.series.name + ": " + Highcharts.numberFormat(point.y, 0.0, ",", ".");
+                        });
+
+                    return s;
+                }
+
+                //Build Chart
+                $("#chart18").highcharts({
+                    credits: {
+                        enabled: false
+                    },
+                    chart: {
+                        width: 800,
+                        backgroundColor: "rgba(255, 255, 255, 0)",
+                        borderWidth: 1,
+                        renderTo: "container",
+                    },
+                    rangeSelector: {
+                        enabled: false
+                    },
+                    credits: {
+                        enabled: true,
+                        href: "http://www.hagstova.fo",
+                        text: "Hagstova Føroya"
+                    }, 
+                    exporting: {
+                        enabled: true
+                    },
+
+                    navigator: {
+                        enabled: true
+                    },
+                    title: {
+                        text: "Útflutningur av fiskavørum til Týsklands",
+                        y: 30
+                    },
+                    subtitle: {
+                        text: 'í mió. kr.',
+                        y: 45,                        
+                    },                    
+                    legend: {
+                        y: 60,  
+                        align: "center",
+                        verticalAlign: "top",
+
+                        itemStyle: {
+                            color: "#000",
+                            fontWeight: "normal"
+                        }
+                    },
+                    xAxis: {
+                        tickAmount: 12,                        
+                        title: {
+                            enabled: false
+                        },
+                        type: "datetime",
+                        min: chart18_last_month - 65743595833,
+                        max: chart18_last_month,
+                        labels: {
+                            style: {
+                                color: "#000",
+                                fontSize: "11px"
+                            }
+                        },
+                        showLastLabel: true,
+
+                    },
+                    yAxis: {
+                        title: {
+                            text: "",
+                            style: {
+                                color: "#000",
+                                fontWeight: "normal",
+                                fontSize: "12px"
+                            }
+                        },
+                        min: 0,
+                        lineColor: "#000",
+                        tickColor: "#000",
+                        labels: {
+                            formatter: function () {
+                                return Highcharts.numberFormat(this.value, 0);
+                            },
+                            style: {
+                                color: "#000",
+                                font: "11px"
+                            }
+                        },
+                    },
+                    tooltip: {
+                        enabled: true
+                    },
+                    plotOptions: {
+                        line: {
+                            marker: {
+                                enabled: false
+                            },
+                            lineWidth: 4
+
+                        },
+
+                        series: {
+                            dataGrouping:{
+                                approximation: "sum",
+                                enabled: true,
+                                units:[ ["year", [null]]],
+                                groupPixelWidth: 10
+                            },
+                        },
+
+                    },
+                    series: [
+                {
+                    name: "Toskur, hýsa, upsi",
+                    data: toskurhysaupsidata,
+                    color: "#9b1212",
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                    legendIndex:1,
+                    index: 3
+                },
+                {
+                    name: "Makrelur, sild, svartkjaftur",
+                    data: makrelursildsvartkjafturdata,
+                    color: "#f7b538",
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                    legendIndex:2,
+                    index: 2
+                },
+                {
+                    name: "Alifiskur",
+                    data: alifiskurdata,
+                    color: "#fb6107",
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                    legendIndex:3,
+                    index: 1
+                },
+                {
+                    name: "Onnur fiskasløg",
+                    data: onnurfiskaslogdata,
+                    color: "#00a6ed",
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                    legendIndex:4,
+                    index: 0
+                }
+                ]
+                });
+            }
+
+            function loadDataAndBuildChart18() {
+                POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_utfisk.px", {
+                    "query": [
+                        {
+                            "code": "unit",
+                            "selection": {
+                                "filter": "item",
+                                "values": [
+                                    "DKK"
+                                ]
+                            }
+                        },
+                        {
+                          "code": "fish species and other groups",
+                          "selection": {
+                            "filter": "item",
+                            "values": [
+                              "TOT",
+                              "1",
+                              "3",
+                              "2",
+                              "11",
+                              "30",
+                              "53",
+                              "50",
+                              "51",
+                              "90",
+                              "91"
+                            ]
+                          }
+                        },
+                        {
+                          "code": "country of final destination",
+                          "selection": {
+                            "filter": "item",
+                            "values": [
+                              "004"
+                            ]
+                          }
+                        },                        
+                        {
+                            "code": "month",
+                            "selection": {
+                                "filter": "all",
+                                "values": [
+                                    "*"
+                                ]
+                            }
+                        }
+                    ],
+                    "response": {
+                        "format": "json-stat"
+
+                    }
+                },function(data) {
+                    chart18Data = data;
+                    drawChart18();
+                    startAnimatingChart18();
+                } );
+            }
+
+
+
+
+//---------------------------------------------------------
+//                                CHART 19
+//---------------------------------------------------------
+
+            var chart19;
+            var chart19Data;
+            var chart19CreatedSeries;
+            var chart19_last_month;
+            var chart19Timeout0;
+            var chart19Timeout1;
+            var chart19Timeout2;
+            var chart19Timeout3;
+            var chart19Timeout4;
+
+            function startAnimatingChart19() {
+                clearTimeout(chart19Timeout0);
+                clearTimeout(chart19Timeout1);
+                clearTimeout(chart19Timeout2);
+                clearTimeout(chart19Timeout3);
+                clearTimeout(chart19Timeout4);
+
+                drawChart19();
+
+                chart19Timeout0 = setTimeout(function() {
+                    chart19.addSeries(chart19CreatedSeries[0]);
+                }, 100);
+                chart19Timeout1 = setTimeout(function() {
+                    chart19.addSeries(chart19CreatedSeries[1]);
+                }, 3000);
+                chart19Timeout2 = setTimeout(function() {
+                    chart19.addSeries(chart19CreatedSeries[2]);
+                }, 5000);
+                chart19Timeout3 = setTimeout(function() {
+                    chart19.addSeries(chart19CreatedSeries[3]);
+                }, 7000);
+
+                chart19Timeout4 =setTimeout(function () {
+                    chart19.update({xAxis: {
+                        min: null,
+                        max: null,
+                    }});
+                }, 25000);
+            }
+
+            //Chart 3 specific functions
+            function drawChart19() {
+
+                var jsonStatData = chart19Data;
+                //Extrat Data From JSON Stat
+                ds = JSONstat(jsonStatData).Dataset(0);
+                t = ds.Dimension("year").length - 1;
+                year = ds.Dimension("year").id;
+                var fLen = year.length;
+                m = ds.Dimension("month").id;
+
+
+            //Format Data
+
+                var onnurfiskaslogdata = [];
+                var toskurhysaupsidata = [];
+                var makrelursildsvartkjafturdata = [];
+                var alifiskurdata = [];
+
+                for (var i = 0; i < fLen; i++) {
+
+                    var toskur = ds.Data({"fish species and other groups": "1", "year": ds.Dimension("year").id[i] }, false);
+                    var hysa = ds.Data({"fish species and other groups": "3", "year": ds.Dimension("year").id[i] }, false);
+                    var upsi = ds.Data({"fish species and other groups": "2", "year": ds.Dimension("year").id[i] }, false);
+                    var makrelur = ds.Data({"fish species and other groups": "51", "year": ds.Dimension("year").id[i] }, false);
+                    var sild = ds.Data({"fish species and other groups": "50", "year": ds.Dimension("year").id[i] }, false);
+                    var svartkjaftur = ds.Data({"fish species and other groups": "53", "year": ds.Dimension("year").id[i] }, false);
+                    var laksur = ds.Data({"fish species and other groups": "11", "year": ds.Dimension("year").id[i] }, false);
+                    var sil = ds.Data({"fish species and other groups": "30", "year": ds.Dimension("year").id[i] }, false);
+                    
+                    var skipflogfor = ds.Data({"fish species and other groups": "90", "year": ds.Dimension("year").id[i] }, false);
+                    var adrarvorur = ds.Data({"fish species and other groups": "91", "year": ds.Dimension("year").id[i] }, false);
+                    var totalutflutning = ds.Data({"fish species and other groups": "TOT", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+
+
+                    for (var j = 0; j < totalutflutning.length; j++) {
+                        var month = m[j];
+                        if(month.length == 1) {
+                            month = "0" + month;
+                        }
+                        onnurfiskaslogdata.push([Date.parse(year[i] + "-" + month), (totalutflutning[j] - (skipflogfor[j] + adrarvorur[j] + toskur[j] + hysa[j] + upsi[j] + laksur[j] + sil[j] + makrelur[j] + sild[j] + svartkjaftur[j] ))*0.001]);
+                        
+                        toskurhysaupsidata.push([Date.parse(year[i] + "-" + month), (toskur[j] + hysa[j] + upsi[j])*0.001]);
+                        alifiskurdata.push([Date.parse(year[i] + "-" + month), (laksur[j] + sil[j])*0.001]);
+                        makrelursildsvartkjafturdata.push([Date.parse(year[i] + "-" + month), (makrelur[j] + sild[j] + svartkjaftur[j])*0.001]);
+                    }
+                }
+
+
+
+
+                var chart19_last_month = onnurfiskaslogdata[onnurfiskaslogdata.length - 1];
+                chart19_last_month = chart19_last_month[0];
+
+                //Build Series
+                var createdSeries = 0;
+                chart19CreatedSeries = createdSeries;
+
+
+                //Build Title
+                var title = ds.label;
+
+                //Build subtitle
+                var subtitle = ds.source;
+
+                //Build Tooltip
+                var tooltipFunction = function () {
+                    var s = "<b>" + Highcharts.dateFormat("%Y-%b", this.x) + "</b>";
+                    $.each(this.points,
+                        function (i, point) {
+                            s += "<br/>" + point.series.name + ": " + Highcharts.numberFormat(point.y, 0.0, ",", ".");
+                        });
+
+                    return s;
+                }
+
+                //Build Chart
+                $("#chart19").highcharts({
+                    credits: {
+                        enabled: false
+                    },
+                    chart: {
+                        width: 800,
+                        backgroundColor: "rgba(255, 255, 255, 0)",
+                        borderWidth: 1,
+                        renderTo: "container",
+                    },
+                    rangeSelector: {
+                        enabled: false
+                    },
+                    credits: {
+                        enabled: true,
+                        href: "http://www.hagstova.fo",
+                        text: "Hagstova Føroya"
+                    }, 
+                    exporting: {
+                        enabled: true
+                    },
+
+                    navigator: {
+                        enabled: true
+                    },
+                    title: {
+                        text: "Útflutningur av fiskavørum til ES",
+                        y: 30
+                    },
+                    subtitle: {
+                        text: 'í mió. kr.',
+                        y: 45,                        
+                    },                    
+                    legend: {
+                        y: 60,  
+                        align: "center",
+                        verticalAlign: "top",
+
+                        itemStyle: {
+                            color: "#000",
+                            fontWeight: "normal"
+                        }
+                    },
+                    xAxis: {
+                        tickAmount: 12,                        
+                        title: {
+                            enabled: false
+                        },
+                        type: "datetime",
+                        min: chart19_last_month - 65743595833,
+                        max: chart19_last_month,
+                        labels: {
+                            style: {
+                                color: "#000",
+                                fontSize: "11px"
+                            }
+                        },
+                        showLastLabel: true,
+
+                    },
+                    yAxis: {
+                        title: {
+                            text: "",
+                            style: {
+                                color: "#000",
+                                fontWeight: "normal",
+                                fontSize: "12px"
+                            }
+                        },
+                        min: 0,
+                        lineColor: "#000",
+                        tickColor: "#000",
+                        labels: {
+                            formatter: function () {
+                                return Highcharts.numberFormat(this.value, 0);
+                            },
+                            style: {
+                                color: "#000",
+                                font: "11px"
+                            }
+                        },
+                    },
+                    tooltip: {
+                        enabled: true
+                    },
+                    plotOptions: {
+                        line: {
+                            marker: {
+                                enabled: false
+                            },
+                            lineWidth: 4
+
+                        },
+
+                        series: {
+                            dataGrouping:{
+                                approximation: "sum",
+                                enabled: true,
+                                units:[ ["year", [null]]],
+                                groupPixelWidth: 10
+                            },
+                        },
+
+                    },
+                    series: [
+                {
+                    name: "Toskur, hýsa, upsi",
+                    data: toskurhysaupsidata,
+                    color: "#9b1212",
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                    legendIndex:1,
+                    index: 3
+                },
+                {
+                    name: "Makrelur, sild, svartkjaftur",
+                    data: makrelursildsvartkjafturdata,
+                    color: "#f7b538",
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                    legendIndex:2,
+                    index: 2
+                },
+                {
+                    name: "Alifiskur",
+                    data: alifiskurdata,
+                    color: "#fb6107",
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                    legendIndex:3,
+                    index: 1
+                },
+                {
+                    name: "Onnur fiskasløg",
+                    data: onnurfiskaslogdata,
+                    color: "#00a6ed",
+                    tooltip: {
+                        valueDecimals: 1
+                    },
+                    legendIndex:4,
+                    index: 0
+                }
+                ]
+                });
+            }
+
+            function loadDataAndBuildChart19() {
+                POST("https://statbank.hagstova.fo/api/v1/fo/H2/UH/UH01/uh_utfisk.px", {
+                    "query": [
+                        {
+                            "code": "unit",
+                            "selection": {
+                                "filter": "item",
+                                "values": [
+                                    "DKK"
+                                ]
+                            }
+                        },
+                        {
+                          "code": "fish species and other groups",
+                          "selection": {
+                            "filter": "item",
+                            "values": [
+                              "TOT",
+                              "1",
+                              "3",
+                              "2",
+                              "11",
+                              "30",
+                              "53",
+                              "50",
+                              "51",
+                              "90",
+                              "91"
+                            ]
+                          }
+                        },
+                        {
+                          "code": "country of final destination",
+                          "selection": {
+                            "filter": "agg:EU28-fo.agg",
+                            "values": [
+                              "ES-28"
+                            ]
+                          }
+                        },                        
+                        {
+                            "code": "month",
+                            "selection": {
+                                "filter": "all",
+                                "values": [
+                                    "*"
+                                ]
+                            }
+                        }
+                    ],
+                    "response": {
+                        "format": "json-stat"
+
+                    }
+                },function(data) {
+                    chart19Data = data;
+                    drawChart19();
+                    startAnimatingChart19();
+                } );
+            }
 
 
 
@@ -3808,6 +5478,11 @@ width: 800,
                 loadDataAndBuildChart12();   
                 loadDataAndBuildChart13();     
                 loadDataAndBuildChart14();                                                            
+                loadDataAndBuildChart15();  
+                loadDataAndBuildChart16();  
+                loadDataAndBuildChart17();  
+                loadDataAndBuildChart18();  
+                loadDataAndBuildChart19();                                
             });
 </script>
 
@@ -3831,17 +5506,29 @@ width: 800,
 
     <div id="chart5"></div>
 
+    <div id="chart15"></div>
+
     <div id="chart6"></div>
 
+    <div id="chart16"></div>    
+
     <div id="chart7"></div>
+
+    <div id="chart17"></div>    
 
     <div id="chart11"></div>
 
     <div id="chart12"></div>
 
+    <div id="chart18"></div>
+
     <div id="chart13"></div>
 
+
+
     <div id="chart14"></div>
+
+    <div id="chart19"></div>
 
 
 </div>

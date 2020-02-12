@@ -1212,7 +1212,7 @@
                 var alifiskurdata = [];
 
                 for (var i = 0; i < fLen; i++) {
-                    var onnurfiskaslog = ds.Data({"commodity groups": "080", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+                    var onnurfiskaslog = ds.Data({"commodity groups": "080", "year": ds.Dimension("year").id[i] }, false);
                     var toskur = ds.Data({"commodity groups": "001", "year": ds.Dimension("year").id[i] }, false);
                     var hysa = ds.Data({"commodity groups": "003", "year": ds.Dimension("year").id[i] }, false);
                     var upsi = ds.Data({"commodity groups": "002", "year": ds.Dimension("year").id[i] }, false);

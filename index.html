@@ -125,14 +125,9 @@
 
                 yearinnflutningurutflutningurdifference = yearinnflutningurlength - fLen;
 
-
-
                 m = dsutflutningur.Dimension("month").id;
 
                 //Format Data
-
-
-
 
                 var innflutningurdata = [];
                 var utflutningurdata = [];
@@ -145,7 +140,7 @@
 
 
                     innflutningur = ds.Data({ "BEC-groups": "TOT", "year": ds.Dimension("year").id[i + yearinnflutningurutflutningurdifference] }, false).filter(function(n) { return n; });
-                    utflutningur = dsutflutningur.Data({ "unit": "DKK", "commodity group": "TOT", "year": dsutflutningur.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+                    utflutningur = dsutflutningur.Data({ "unit": "DKK", "commodity groups": "TOT", "year": dsutflutningur.Dimension("year").id[i] }, false).filter(function(n) { return n; });
 
 
                     for (var j = 0; j < utflutningur.length; j++) {
@@ -153,19 +148,26 @@
                         yaxisinnflutningur.push[innflutningur[j]];
                         yaxisutflutningur.push[-utflutningur[j]];
 
-                        var month = m[j];
+                        var month = m[j].replace("M","-");
+
 
                         if(month.length == 1) {
                             month = "0" + month;
                         }
 
 
-                        innflutningurdata.push([Date.parse(year[i] + "-" + month), -innflutningur[j]/1000]);
-                        utflutningurdata.push([Date.parse(year[i] + "-" + month), utflutningur[j]/1000]);
-                        nettoflytingdata.push([Date.parse(year[i] + "-" + month), (utflutningur[j] - innflutningur[j])/1000]);
+
+                        console.log(year[i] + "-" + month);
+
+                        innflutningurdata.push([Date.parse(year[i] + month), -innflutningur[j]/1000]);
+                        utflutningurdata.push([Date.parse(year[i] + month), utflutningur[j]/1000]);
+                        nettoflytingdata.push([Date.parse(year[i] + month), (utflutningur[j] - innflutningur[j])/1000]);
 
                     }
                 }
+
+
+
 
                 var chart1_last_month = innflutningurdata[innflutningurdata.length - 1];
                 chart1_last_month = chart1_last_month[0];
@@ -366,7 +368,7 @@
                           }
                         },
                         {
-                              "code": "commodity group",
+                              "code": "commodity groups",
                               "selection": {
                                 "filter": "item",
                                 "values": [
@@ -445,11 +447,15 @@
 
 
                     for (var j = 0; j < innflutningur.length; j++) {
-                        var month = m[j];
+                                                var month = m[j].replace("M","-");
+
                         if(month.length == 1) {
                             month = "0" + month;
                         }
-                        innflutningurdata.push([Date.parse(year[i] + "-" + month), (innflutningur[j] - skipflogfor[j])*0.001]);
+
+
+
+                        innflutningurdata.push([Date.parse(year[i] +  month), (innflutningur[j] - skipflogfor[j])*0.001]);
                     }
                 }
 
@@ -696,12 +702,12 @@
 
 
                     for (var j = 0; j < havlandbunad.length; j++) {
-                        var month = m[j];
+						var month = m[j].replace("M","-");
                         if(month.length == 1) {
                             month = "0" + month;
                         }
-                        tilfarvinnadata.push([Date.parse(year[i] + "-" + month), (havlandbunad[j] + byggivirki[j] + fiskivirki[j] + onnurframleidlsa[j])*0.001]);
-                        husarhalddata.push([Date.parse(year[i] + "-" + month), (husarhald[j])*0.001]);
+                        tilfarvinnadata.push([Date.parse(year[i] + month), (havlandbunad[j] + byggivirki[j] + fiskivirki[j] + onnurframleidlsa[j])*0.001]);
+                        husarhalddata.push([Date.parse(year[i] + month), (husarhald[j])*0.001]);
                     }
                 }
 
@@ -935,11 +941,11 @@
                     var skipflogfor = ds.Data({ "fish species and other groups": "90", "year": ds.Dimension("year").id[i] }, false).map(function(n) { return n !== "-" | null | n }).filter(function(n) { return n; });
 
                     for (var j = 0; j < utflutningur.length; j++) {
-                        var month = m[j];
+                        var month = m[j].replace("M","-");
                         if(month.length == 1) {
                             month = "0" + month;
                         }
-                        utflutningurdata.push([Date.parse(year[i] + "-" + month), (utflutningur[j]-adrarvorur[j]-skipflogfor[j])*0.001]);
+                        utflutningurdata.push([Date.parse(year[i] + month), (utflutningur[j]-adrarvorur[j]-skipflogfor[j])*0.001]);
                     }
                 }
 
@@ -1206,26 +1212,26 @@
                 var alifiskurdata = [];
 
                 for (var i = 0; i < fLen; i++) {
-                    var onnurfiskaslog = ds.Data({"commodity group": "080", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
-                    var toskur = ds.Data({"commodity group": "001", "year": ds.Dimension("year").id[i] }, false);
-                    var hysa = ds.Data({"commodity group": "003", "year": ds.Dimension("year").id[i] }, false);
-                    var upsi = ds.Data({"commodity group": "002", "year": ds.Dimension("year").id[i] }, false);
-                    var makrelur = ds.Data({"commodity group": "051", "year": ds.Dimension("year").id[i] }, false);
-                    var sild = ds.Data({"commodity group": "050", "year": ds.Dimension("year").id[i] }, false);
-                    var svartkjaftur = ds.Data({"commodity group": "053", "year": ds.Dimension("year").id[i] }, false);
-                    var laksur = ds.Data({"commodity group": "011", "year": ds.Dimension("year").id[i] }, false);
-                    var sil = ds.Data({"commodity group": "030", "year": ds.Dimension("year").id[i] }, false);
-                    var raekjur = ds.Data({"commodity group": "067", "year": ds.Dimension("year").id[i] }, false);
+                    var onnurfiskaslog = ds.Data({"commodity groups": "080", "year": ds.Dimension("year").id[i] }, false).filter(function(n) { return n; });
+                    var toskur = ds.Data({"commodity groups": "001", "year": ds.Dimension("year").id[i] }, false);
+                    var hysa = ds.Data({"commodity groups": "003", "year": ds.Dimension("year").id[i] }, false);
+                    var upsi = ds.Data({"commodity groups": "002", "year": ds.Dimension("year").id[i] }, false);
+                    var makrelur = ds.Data({"commodity groups": "051", "year": ds.Dimension("year").id[i] }, false);
+                    var sild = ds.Data({"commodity groups": "050", "year": ds.Dimension("year").id[i] }, false);
+                    var svartkjaftur = ds.Data({"commodity groups": "053", "year": ds.Dimension("year").id[i] }, false);
+                    var laksur = ds.Data({"commodity groups": "011", "year": ds.Dimension("year").id[i] }, false);
+                    var sil = ds.Data({"commodity groups": "030", "year": ds.Dimension("year").id[i] }, false);
+                    var raekjur = ds.Data({"commodity groups": "067", "year": ds.Dimension("year").id[i] }, false);
 
                     for (var j = 0; j < onnurfiskaslog.length; j++) {
-                        var month = m[j];
+                                                var month = m[j].replace("M","-");
                         if(month.length == 1) {
                             month = "0" + month;
                         }
-                        onnurfiskaslogdata.push([Date.parse(year[i] + "-" + month), (onnurfiskaslog[j] + raekjur[j])*0.001]);
-                        toskurhysaupsidata.push([Date.parse(year[i] + "-" + month), (toskur[j] + hysa[j] + upsi[j])*0.001]);
-                        alifiskurdata.push([Date.parse(year[i] + "-" + month), (laksur[j] + sil[j])*0.001]);
-                        makrelursildsvartkjafturdata.push([Date.parse(year[i] + "-" + month), (makrelur[j] + sild[j] + svartkjaftur[j])*0.001]);
+                        onnurfiskaslogdata.push([Date.parse(year[i] + month), (onnurfiskaslog[j] + raekjur[j])*0.001]);
+                        toskurhysaupsidata.push([Date.parse(year[i] + month), (toskur[j] + hysa[j] + upsi[j])*0.001]);
+                        alifiskurdata.push([Date.parse(year[i] + month), (laksur[j] + sil[j])*0.001]);
+                        makrelursildsvartkjafturdata.push([Date.parse(year[i] + month), (makrelur[j] + sild[j] + svartkjaftur[j])*0.001]);
                     }
                 }
 
@@ -1416,7 +1422,7 @@
                             }
                         },
                         {
-                          "code": "commodity group",
+                          "code": "commodity groups",
                           "selection": {
                             "filter": "item",
                             "values": [
